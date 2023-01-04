@@ -1,3 +1,8 @@
+'''
+Cada tarefa é constituída da seguinte forma:
+[Tarefa];[Descrição]
+'''
+
 def addTarefa(username, tarefa, descrição=''):
     while True:
         try:
