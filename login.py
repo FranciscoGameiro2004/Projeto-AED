@@ -1,4 +1,6 @@
 def criarConta(username, senha, tipo='Normal'):
+    from os import chdir, mkdir
+
     carsInvalidos = ';'
     existeConta = False # A princípio, a conta não existe.
     caracterInvalido = False # A princípio, não existe quaisquer caracter inválido.
@@ -18,6 +20,10 @@ def criarConta(username, senha, tipo='Normal'):
         ficheiroContas = open('files\\acessos.txt', 'a')
         ficheiroContas.write('{};{};{}\n'.format(username,senha,tipo))
         ficheiroContas.close()
+        chdir('files\\users')
+        mkdir(username)
+        chdir('..\\')
+        chdir('..\\')
     elif caracterInvalido == True:
         print('Não é possível usar caracteres especiais.')
     else:
@@ -38,5 +44,3 @@ def login(username, senha):
         print('Não conseguiu entrar. Deve ter errado os parâmetros')
 
 
-
-login('a54', '346323')
