@@ -1,9 +1,11 @@
 '''
 Cada tarefa é constituída da seguinte forma:
-[Tarefa];[Descrição]
+[Tarefa];[Descrição];[Data];[Hora]
 '''
 
 def addTarefa(username, tarefa, descrição=''):
+    from datetime import date, datetime
+
     while True:
         try:
             ficheiroTarefas = open('files\\users\\{}\\listaTarefas.txt'.format(username), 'a', encoding='UTF-8')
@@ -12,7 +14,10 @@ def addTarefa(username, tarefa, descrição=''):
             ficheiroTarefas = open('files\\users\\{}\\listaTarefas.txt'.format(username), 'c')
             ficheiroTarefas.close()
     
-    ficheiroTarefas.write('{};{}\n'.format(tarefa,descrição))
+    data = date.today()
+    hora = datetime.now().strftime('%H:%M:%S')
+    
+    ficheiroTarefas.write('{};{};{};{}\n'.format(tarefa,descrição,data,hora))
     ficheiroTarefas.close()
 
 def delTarefa(username, numTar):
@@ -36,6 +41,6 @@ def delTarefa(username, numTar):
     
     ficheiroTarefas.close()
 
-#addTarefa('admin','Dar mimo à Ufinha')
+#addTarefa('admin','Fazer isto')
 
-#delTarefa('admin', 1)
+#delTarefa('admin', 0)
