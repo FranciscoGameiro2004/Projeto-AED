@@ -8,16 +8,22 @@ def addTarefa(username, tarefa, descrição='', favorito=False):
 
     while True:
         try:
+            ficheiroTarefas = open('files\\users\\{}\\listaTarefas.txt'.format(username), 'r', encoding='UTF-8')
+            listaTarefas = ficheiroTarefas.readlines()
+            print(listaTarefas)
+            numTarefa = len(listaTarefas)
+            ficheiroTarefas.close()
             ficheiroTarefas = open('files\\users\\{}\\listaTarefas.txt'.format(username), 'a', encoding='UTF-8')
             break
         except:
-            ficheiroTarefas = open('files\\users\\{}\\listaTarefas.txt'.format(username), 'c')
+            ficheiroTarefas = open('files\\users\\{}\\listaTarefas.txt'.format(username), 'x')
             ficheiroTarefas.close()
     
     data = date.today()
     hora = datetime.now().strftime('%H:%M:%S')
     
-    ficheiroTarefas.write('{};{};{};{};{}\n'.format(tarefa,descrição,data,hora,favorito))
+    
+    ficheiroTarefas.write('{};{};{};{};{};{}\n'.format(numTarefa,tarefa,descrição,data,hora,favorito))
     ficheiroTarefas.close()
 
 def delTarefa(username, numTar):
