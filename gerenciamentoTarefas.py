@@ -33,7 +33,7 @@ def delTarefa(username, numTar):
             ficheiroTarefas = open('files\\users\\{}\\listaTarefas.txt'.format(username), 'r+', encoding='UTF-8')
             break
         except:
-            ficheiroTarefas = open('files\\users\\{}\\listaTarefas.txt'.format(username), 'c')
+            ficheiroTarefas = open('files\\users\\{}\\listaTarefas.txt'.format(username), 'x')
             ficheiroTarefas.close()
 
     listaTarefas = ficheiroTarefas.readlines()
@@ -54,7 +54,7 @@ def addFavorito(username, numTar):
             ficheiroTarefas = open('files\\users\\{}\\listaTarefas.txt'.format(username), 'r+', encoding='UTF-8')
             break
         except:
-            ficheiroTarefas = open('files\\users\\{}\\listaTarefas.txt'.format(username), 'c')
+            ficheiroTarefas = open('files\\users\\{}\\listaTarefas.txt'.format(username), 'x')
             ficheiroTarefas.close()
 
     listaTarefas = ficheiroTarefas.readlines()
