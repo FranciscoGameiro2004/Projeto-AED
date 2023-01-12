@@ -22,4 +22,4 @@ def targetTime(dataAlvo, horaAlvo):
     else:
         return False
 
-print(targetTime('08-01-2023','12:15:00'))
+#print(targetTime('08-01-2023','12:15:00'))

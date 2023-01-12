@@ -1,10 +1,11 @@
 '''
 Cada tarefa é constituída da seguinte forma:
-[Numero da Tarefa];[Tarefa];[Descrição];[Data];[Hora];[Favorito]
-Índice:  0            1          2         3      4        5
+[Numero da Tarefa];[Tarefa];[Descrição];[Data];[Hora];[Favorito];[[Data a ser acionado],[Hora a ser acionado]]
+Índice:  0            1          2         3      4        5                           6
+Índice para o acionamento de um lembrete:                                  0                     1
 '''
 
-def addTarefa(username, tarefa, descrição='', favorito=False):
+def addTarefa(username, tarefa, descrição='', favorito=False, dataAAcionar=None, horaAAcionar=None):
     from datetime import date, datetime
 
     while True:
@@ -24,7 +25,7 @@ def addTarefa(username, tarefa, descrição='', favorito=False):
     hora = datetime.now().strftime('%H:%M:%S')
     
     
-    ficheiroTarefas.write('{};{};{};{};{};{}\n'.format(numTarefa,tarefa,descrição,data,hora,favorito))
+    ficheiroTarefas.write('{};{};{};{};{};{};{},{}\n'.format(numTarefa,tarefa,descrição,data,hora,favorito,dataAAcionar,horaAAcionar))
     ficheiroTarefas.close()
 
 def delTarefa(username, numTar):
@@ -80,7 +81,7 @@ def addFavorito(username, numTar):
     
     ficheiroTarefas.close()
 
-#addTarefa('admin','Tomar banho')
+#addTarefa('admin','Tomar banho', dataAAcionar='12-01-2023', horaAAcionar='12:00:00')
 
 #delTarefa('admin', 0)
 
