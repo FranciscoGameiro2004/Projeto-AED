@@ -1,6 +1,7 @@
 '''
 Cada tarefa é constituída da seguinte forma:
-[Tarefa];[Descrição];[Data];[Hora];[Favorito]
+[Numero da Tarefa];[Tarefa];[Descrição];[Data];[Hora];[Favorito]
+Índice:  0            1          2         3      4        5
 '''
 
 def addTarefa(username, tarefa, descrição='', favorito=False):
