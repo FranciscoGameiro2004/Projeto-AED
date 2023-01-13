@@ -1,7 +1,7 @@
 from timing import *
 
 def rececaoLembretes(username):
-    docTarefas = open('files\\users\\{}\\listaTarefas.txt'.format(username), 'r')
+    docTarefas = open('files\\users\\{}\\listaTarefas.txt'.format(username), 'r', encoding='utf-8')
 
     listaTarefas = docTarefas.readlines()
 
@@ -15,4 +15,26 @@ def rececaoLembretes(username):
         else:
             print('nada')
 
+def rececaoNoticias(username):
+    '''
+    Constituição de uma notícia:
+    [Estado];;;[Autor];;;[Título da notícia];;;[Lead da notícia];;;[Texto da notícia];;;[[Data],[Hora]]
+        0         1               2                     3                  4                   5
+                                                                                            0     1
+    '''
+    docNoticias = open('files\\users\\{}\\noticias.txt'.format(username), 'r', encoding='utf-8')
+
+    listaNoticias = docNoticias.readlines()
+
+    docNoticias.close()
+
+    for i in listaNoticias:
+        noticia = i.split(';;;')
+        if noticia[0] == 'Não lido':
+            print(noticia[2], ' de ', noticia[1], '\n')
+            print(noticia[3], '\n')
+            print(noticia[4])
+            print('\n')
+
 #rececaoLembretes('admin')
+#rececaoNoticias('admin')
