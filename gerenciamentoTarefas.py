@@ -38,7 +38,10 @@ def delTarefa(username, numTar):
             ficheiroTarefas.close()
 
     listaTarefas = ficheiroTarefas.readlines()
-    del listaTarefas[numTar]
+    for i in range(len(listaTarefas)):
+        if int(listaTarefas[i].split(';')[0]) == numTar:
+            del listaTarefas[i]
+            break
     
     ficheiroTarefas.close()
 
