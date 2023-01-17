@@ -10,6 +10,7 @@ from tkinter import ttk # biblioteca tkinter treeview
 from tkinter import messagebox # biblioteca tkinter messagebox
 from tkinter import filedialog
 from PIL import ImageTk,Image    # Imagens .jpg ou .png
+from conta import *
 #Bibloiotecas inportadads fim
 
 os.system("cls")
@@ -63,7 +64,7 @@ def loginConta(username, txtMenuLoginNome, nameLogin,
                cbGenero,cbTipo):
     #print(username)
     #print(password)
-    global login, userAtual
+    global login, userAtual, btnOpcao2, btnOpcao3, btnOpcao4
     acessos = open(ficheiroUsurios, "r", encoding="utf8")
     linhas = acessos.readlines()
     acessos.close()
@@ -81,6 +82,11 @@ def loginConta(username, txtMenuLoginNome, nameLogin,
                 txtDescricao.config(state =DISABLED)
 
                 userAtual = linha[0]
+                btnOpcao2.config(state='active')
+                btnOpcao3.config(state='active')
+                a = tipoDeConta(userAtual)
+                if tipoDeConta(userAtual) == 'admin':
+                    btnOpcao4.config(state='active')
 
                 #zona de Login
                 nameLogin.set("")
@@ -113,6 +119,10 @@ def loginConta(username, txtMenuLoginNome, nameLogin,
         txtMenuLoginSenha.config(state = NORMAL)
         cbGenero.config(state =DISABLED)
         cbTipo.config(state = DISABLED)
+
+        btnOpcao2.config(state='disabled')
+        btnOpcao3.config(state='disabled')
+        btnOpcao4.config(state='disabled')
 
         btnLogin.config(text = "Login")
         login = 0
@@ -269,7 +279,7 @@ def telaAreaPessoal():
     btnMenuCriar_Login_Modos.place(x=155,y=5)
 
 def telaGerirTarefas():
-
+    global userAtual, lbLista
 
     panelTarefas = PanedWindow(window, width = 400, height= 450,bg="gray")
     panelTarefas.place(x=300, y= 0)
@@ -306,14 +316,39 @@ def telaGerirTarefas():
     txtFavorito = Entry(lblTarefas, width=20, font = ("arial",12))
     txtFavorito.place(x = 185, y=205)
 
-    btnAdcionar = Button(lblTarefas,width=19,height=1,text="Adcionar", font =("arial",12))
+    btnAdcionar = Button(lblTarefas,width=19,height=1,text="Adcionar", font =("arial",12),command= lambda: addTarefa(userAtual, txtTarefa.get()))
     btnAdcionar.place(x=187,y=235)
     
-    btnAdcionar = Button(lblTarefas,width=19,height=1,text="Remover", font =("arial",12))
-    btnAdcionar.place(x=187,y=275)
+    btnRemover = Button(lblTarefas,width=19,height=1,text="Remover", font =("arial",12))
+    btnRemover.place(x=187,y=275)
 
-    btnAdcionar = Button(lblTarefas,width=19,height=1,text="Atualizar", font =("arial",12))
-    btnAdcionar.place(x=187,y=315)
+    btnAtualizar = Button(lblTarefas,width=19,height=1,text="Atualizar", font =("arial",12))
+    btnAtualizar.place(x=187,y=315)
+
+def addTarefa(username, tarefa, descrição='', favorito=False, dataAAcionar=None, horaAAcionar=None, categoria=None):
+    from datetime import date, datetime
+    global lbLista
+
+    while True:
+        try:
+            ficheiroTarefas = open('files\\users\\{}\\listaTarefas.txt'.format(username), 'r', encoding='UTF-8')
+            listaTarefas = ficheiroTarefas.readlines()
+            print(listaTarefas)
+            numTarefa = len(listaTarefas)
+            ficheiroTarefas.close()
+            ficheiroTarefas = open('files\\users\\{}\\listaTarefas.txt'.format(username), 'a', encoding='UTF-8')
+            break
+        except:
+            ficheiroTarefas = open('files\\users\\{}\\listaTarefas.txt'.format(username), 'x')
+            ficheiroTarefas.close()
+    
+    data = date.today()
+    hora = datetime.now().strftime('%H:%M:%S')
+    
+    
+    ficheiroTarefas.write('{};{};{};{};{};{};{},{};{}\n'.format(numTarefa,tarefa,descrição,data,hora,favorito,dataAAcionar,horaAAcionar,categoria))
+    lbLista.insert(END, tarefa)
+    ficheiroTarefas.close()
 
 def telaConsultarTarefas():
 
@@ -383,19 +418,19 @@ btnOpcao1.place (x=40, y=5)
 imageIco2 = PhotoImage(file = "imagens/config_tasks.png" )
 btnOpcao2 = Button(panel1, text = "Gerir\ntarefas", image = imageIco2, compound=LEFT, relief = "sunken", 
                     width = 200, height = 70, font="calibri, 11",
-                    command=telaGerirTarefas)
+                    command=telaGerirTarefas, state='disabled')
 btnOpcao2.place (x=40, y=95)
 #-----------------------------------------------------------------------------------------------------------------------------#
 imageIco3 = PhotoImage(file = "imagens/tasks.png" )
 btnOpcao3 = Button(panel1, text = "Consultar\ntarefas", image = imageIco3, compound=LEFT, relief = "sunken", 
                     width = 200, height = 70, font="calibri, 11",
-                    command=telaConsultarTarefas)
+                    command=telaConsultarTarefas, state='disabled')
 btnOpcao3.place (x=40, y=185)
 #-----------------------------------------------------------------------------------------------------------------------------#
 imageIco4 = PhotoImage(file = "imagens/admin_user_icon.png" )
 btnOpcao4 = Button(panel1, text = "Admin", image = imageIco4, compound=LEFT, relief = "sunken", 
                     width = 200, height = 70, font="calibri, 11",
-                    command=lambda: print("btnOpcao4"))
+                    command=lambda: print("btnOpcao4"), state='disabled')
 btnOpcao4.place (x=40, y=275)
 #-----------------------------------------------------------------------------------------------------------------------------#
 imageIco5 = PhotoImage(file = "imagens/exit.png" )

@@ -7,6 +7,9 @@ Cada tarefa é constituída da seguinte forma:
 
 def addTarefa(username, tarefa, descrição='', favorito=False, dataAAcionar=None, horaAAcionar=None, categoria=None):
     from datetime import date, datetime
+    global lbLista
+
+    print(lbLista.get())
 
     while True:
         try:
