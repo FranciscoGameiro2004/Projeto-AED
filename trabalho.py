@@ -16,7 +16,8 @@ os.system("cls")
 
 #Variaveis globais inicio
 pasta = "files"
-ficheiroUsurios = "files/acessos.txt" 
+ficheiroUsurios = "files/acessos.txt"
+userAtual = '' # Esta variável permite determinar qual é o utilizador ativo no momento.
 #---#
 login = 0
 status = 0
@@ -47,6 +48,7 @@ def criarConta(username, password,gender,type):
     ficheiroUserLIne = pastaUser + "/" + username + ".txt"
 
     if not os.path.exists(pastaUser):
+        #os.chdir('files\\users')
         os.mkdir(pastaUser)
 
     User = open(ficheiroUserLIne, "a", encoding="utf8")
@@ -61,7 +63,7 @@ def loginConta(username, txtMenuLoginNome, nameLogin,
                cbGenero,cbTipo):
     #print(username)
     #print(password)
-    global login
+    global login, userAtual
     acessos = open(ficheiroUsurios, "r", encoding="utf8")
     linhas = acessos.readlines()
     acessos.close()
@@ -77,6 +79,8 @@ def loginConta(username, txtMenuLoginNome, nameLogin,
                 typeInfo.set(linha[3])
                 txtDescricao.insert("end" ,linha[4])
                 txtDescricao.config(state =DISABLED)
+
+                userAtual = linha[0]
 
                 #zona de Login
                 nameLogin.set("")
@@ -94,6 +98,7 @@ def loginConta(username, txtMenuLoginNome, nameLogin,
                 messagebox.showinfo(title="Estado",message=msg)
     elif login == 1:
         #user
+        userAtual = ''
         nameInfo.set("")
         genderInfo.set("")
         typeInfo.set("")
