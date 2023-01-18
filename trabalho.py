@@ -38,23 +38,37 @@ def criarConta(username, password,gender,type):
     print(gender)
     print(type)
     """
-    obs = "Readme"
-    linha = username + ";" + password + ";"+ gender + ";" + type + ";" + obs +  "\n"
-    #print(linha)
-    acessos = open(ficheiroUsurios, "a", encoding="utf8")
-    acessos.write(linha)
-    acessos.close()
 
-    pastaUser = username
-    ficheiroUserLIne = pastaUser + "/" + username + ".txt"
+    if not contaExistente(username):
+        if str(password).find(';') == -1:
+            obs = "Readme"
+            linha = username + ";" + password + ";"+ gender + ";" + type + ";" + obs +  "\n"
+            #print(linha)
+            acessos = open(ficheiroUsurios, "a", encoding="utf8")
+            acessos.write(linha)
+            acessos.close()
 
-    if not os.path.exists(pastaUser):
-        #os.chdir('files\\users')
-        os.mkdir(pastaUser)
+            pastaUser = pasta + '/users/' + username
+            ficheiroUserLIne = pastaUser +  "/listaTatrefas.txt"
+            ficheiroUserNoticias = pastaUser +  "/noticias.txt"
 
-    User = open(ficheiroUserLIne, "a", encoding="utf8")
-    User.write("Primeira tarefa\n")
-    User.close()
+            if not os.path.exists(pastaUser):
+                #os.chdir('files\\users')
+                os.mkdir(pastaUser)
+
+            User = open(ficheiroUserLIne, "a", encoding="utf8")
+            User.write("Primeira tarefa\n")
+            User.close()
+
+            Noticias = open(ficheiroUserNoticias, "a", encoding="utf8")
+            Noticias.write("Primeira notícia\n")
+            Noticias.close()
+        else:
+            msg = 'Não é possível a utilização de caracteres inválidos\nCatacteres inválidos: ;'
+            messagebox.showwarning('Estado', msg)
+    else:
+        msg = 'Já existe uma conta com "{}" como username.'.format(username)
+        messagebox.showwarning('Estado', msg)
 #----------------------------------------------------------------#
 def loginConta(username, txtMenuLoginNome, nameLogin,
                password, txtMenuLoginSenha, passwordLogin,
@@ -324,6 +338,14 @@ def telaGerirTarefas():
 
     btnAtualizar = Button(lblTarefas,width=19,height=1,text="Atualizar", font =("arial",12))
     btnAtualizar.place(x=187,y=315)
+
+    docTarefas = open('files\\users\\{}\\listaTarefas.txt'.format(userAtual), 'r', encoding='UTF-8')
+    listaTarefas = docTarefas.readlines()
+    docTarefas.close()
+
+    for i in listaTarefas:
+        linha = i.split(';')
+        lbLista.insert(END, linha[1])
 
 def addTarefa(username, tarefa, descrição='', favorito=False, dataAAcionar=None, horaAAcionar=None, categoria=None):
     from datetime import date, datetime
