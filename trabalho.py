@@ -398,6 +398,15 @@ def telaConsultarTarefas():
     txtObs = Text(lblObs, width = 46, height = 7)
     txtObs.place(x=5, y=10)
 
+    docTarefas = open('files\\users\\{}\\listaTarefas.txt'.format(userAtual), 'r', encoding='UTF-8')
+    listaTarefas = docTarefas.readlines()
+    docTarefas.close()
+
+    tree.delete(*tree.get_children())
+    for i in listaTarefas:
+        linha = i.split(';')
+        tree.insert('','end',values=(linha[1],linha[3],linha[7].replace('\n',''),linha[5]))
+
 #codigo principal inicio
 window = Tk()
 
