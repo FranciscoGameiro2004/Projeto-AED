@@ -22,4 +22,9 @@ def targetTime(dataAlvo, horaAlvo):
     else:
         return False
 
+def dateConvert(data):
+    #AAAA-MM-DD -> DD-MM-AAAA
+    return '{}-{}-{}'.format(data.split('-')[2],data.split('-')[1],data.split('-')[0])
+
 #print(targetTime('08-01-2023','12:15:00'))
+print(dateConvert('2023-01-08'))

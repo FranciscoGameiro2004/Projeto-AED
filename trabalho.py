@@ -9,8 +9,10 @@ from tkinter import *  # biblioteca tkinter
 from tkinter import ttk # biblioteca tkinter treeview
 from tkinter import messagebox # biblioteca tkinter messagebox
 from tkinter import filedialog
+from tkcalendar import DateEntry
 from PIL import ImageTk,Image    # Imagens .jpg ou .png
 from conta import *
+from timing import *
 #Bibloiotecas inportadads fim
 
 os.system("cls")
@@ -49,7 +51,7 @@ def criarConta(username, password,gender,type):
             acessos.close()
 
             pastaUser = pasta + '/users/' + username
-            ficheiroUserLIne = pastaUser +  "/listaTatrefas.txt"
+            ficheiroUserLIne = pastaUser +  "/listaTarefas.txt"
             ficheiroUserNoticias = pastaUser +  "/noticias.txt"
 
             if not os.path.exists(pastaUser):
@@ -317,8 +319,19 @@ def telaGerirTarefas():
 
     lblTxtData = Label(lblTarefas,width=8,text="Data", font =("arial",12))
     lblTxtData.place(x=240,y=95)
-    txtData = Entry(lblTarefas, width=20, font = ("arial",12))
-    txtData.place(x = 185, y=115)
+
+    calData = DateEntry(lblTarefas,selectmode='day')
+    calData.place(x = 185, y=115)
+
+    lblDoisPontos =Label(lblTarefas,width=1,text=":")
+    lblDoisPontos.place(x=323,y=115)
+    spnBxHora = Spinbox(lblTarefas, width=3, from_=0, to=23)
+    spnBxHora.place(x=290,y=115)
+    spnBxMinuto = Spinbox(lblTarefas, width=3, from_=0, to=59)
+    spnBxMinuto.place(x=340,y=115)
+    
+    #txtData = Entry(lblTarefas, width=20, font = ("arial",12))
+    #txtData.place(x = 185, y=115)
 
     lblTxtCategoria = Label(lblTarefas,width=8,text="Categoria", font =("arial",12))
     lblTxtCategoria.place(x=240,y=138)
@@ -330,10 +343,10 @@ def telaGerirTarefas():
     txtFavorito = Entry(lblTarefas, width=20, font = ("arial",12))
     txtFavorito.place(x = 185, y=205)
 
-    btnAdcionar = Button(lblTarefas,width=19,height=1,text="Adcionar", font =("arial",12),command= lambda: addTarefa(userAtual, txtTarefa.get()))
+    btnAdcionar = Button(lblTarefas,width=19,height=1,text="Adcionar", font =("arial",12),command= lambda: addTarefa(userAtual, txtTarefa.get(), categoria=txtCategoria.get(),dataAAcionar= dateConvert(str(calData.get_date()))))
     btnAdcionar.place(x=187,y=235)
     
-    btnRemover = Button(lblTarefas,width=19,height=1,text="Remover", font =("arial",12))
+    btnRemover = Button(lblTarefas,width=19,height=1,text="Remover", font =("arial",12), command= lambda: delTarefa(userAtual, lbLista.curselection()))
     btnRemover.place(x=187,y=275)
 
     btnAtualizar = Button(lblTarefas,width=19,height=1,text="Atualizar", font =("arial",12))
@@ -372,6 +385,36 @@ def addTarefa(username, tarefa, descrição='', favorito=False, dataAAcionar=Non
     lbLista.insert(END, tarefa)
     ficheiroTarefas.close()
 
+def delTarefa(username, numTar):
+    global lbLista
+
+    numTar = int(str(numTar).replace('(','').replace(',','').replace(')',''))
+    print(numTar)
+
+    while True:
+        try:
+            ficheiroTarefas = open('files\\users\\{}\\listaTarefas.txt'.format(username), 'r+', encoding='UTF-8')
+            break
+        except:
+            ficheiroTarefas = open('files\\users\\{}\\listaTarefas.txt'.format(username), 'x')
+            ficheiroTarefas.close()
+
+    listaTarefas = ficheiroTarefas.readlines()
+    for i in range(len(listaTarefas)):
+        if int(listaTarefas[i].split(';')[0]) == numTar:
+            del listaTarefas[i]
+            break
+    
+    ficheiroTarefas.close()
+
+    ficheiroTarefas = open('files\\users\\{}\\listaTarefas.txt'.format(username), 'w', encoding='UTF-8')
+
+    for i in listaTarefas:
+        ficheiroTarefas.write(i)
+    ficheiroTarefas.close()
+
+    lbLista.delete(lbLista.curselection())
+
 def telaConsultarTarefas():
 
     panelConsultarTarefas = PanedWindow(window, width = 400, height= 450,bg="gray")
@@ -403,9 +446,12 @@ def telaConsultarTarefas():
     docTarefas.close()
 
     tree.delete(*tree.get_children())
+    numLinhas = []
     for i in listaTarefas:
         linha = i.split(';')
-        tree.insert('','end',values=(linha[1],linha[3],linha[7].replace('\n',''),linha[5]))
+        tree.insert('','end',values=(linha[1],dateConvert(linha[3]),linha[7].replace('\n',''),linha[5]))
+        numLinhas.append(linha[0])
+    print(numLinhas)
 
 #codigo principal inicio
 window = Tk()
