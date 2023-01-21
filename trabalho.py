@@ -591,12 +591,6 @@ def telaAdmin():
         linha = linha.split(";")
         print(linha[0])
         lbListaUser.insert(END,linha[0])
-    lbListaUser.delete(0,END)
-
-    for linha in linhas:
-        linha = linha.split(";")
-        print(linha[0])
-        lbListaUser.insert(END,linha[0])
 
 
 
@@ -630,8 +624,8 @@ appHeight = 450
 x = (screenWidth/2) - (appWidth/2)        # posição do canto superior esquerdo da window
 y = (screenHeight/2) - (appHeight/2)
 window.geometry("{:.0f}x{:.0f}+{:.0f}+{:.0f}" .format(appWidth, appHeight, int(x), int(y)))
+window.resizable(0,0)
 window.title("Programa")
-
 #-----------------------------------------------------------------------------------------------------------------------------#
 menubar = Menu(window)
 #-----------------------------------------------------------------------------------------------------------------------------#
