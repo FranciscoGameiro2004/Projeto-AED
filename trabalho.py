@@ -347,13 +347,13 @@ def telaGerirTarefas():
     txtFavorito = Entry(lblTarefas, width=20, font = ("arial",12))
     txtFavorito.place(x = 185, y=205)
 
-    btnAdcionar = Button(lblTarefas,width=19,height=1,text="Adcionar", font =("arial",12),command= lambda: addTarefa(userAtual, txtTarefa.get(), categoria=txtCategoria.get(),dataAAcionar= str(calData.get_date()),horaAAcionar='{}:{}'.format(spnBxHora.get(),spnBxMinuto.get())))
+    btnAdcionar = Button(lblTarefas,width=19,height=1,text="Adcionar", font =("arial",12),command= lambda: addTarefa(userAtual, txtTarefa.get(), categoria=txtCategoria.get(),dataAAcionar= str(calData.get_date()),horaAAcionar='{}:{}:00'.format(spnBxHora.get(),spnBxMinuto.get())))
     btnAdcionar.place(x=187,y=235)
     
     btnRemover = Button(lblTarefas,width=19,height=1,text="Remover", font =("arial",12), command= lambda: delTarefa(userAtual, lbLista.curselection()))
     btnRemover.place(x=187,y=275)
 
-    btnAtualizar = Button(lblTarefas,width=19,height=1,text="Atualizar", font =("arial",12))
+    btnAtualizar = Button(lblTarefas,width=19,height=1,text="Atualizar", font =("arial",12), command= lambda: atualizarTarefa(userAtual, numLinhas[int(str(numListaSelecionado()).replace('(','').replace(',)',''))]))
     btnAtualizar.place(x=187,y=315)
 
     docTarefas = open('files\\users\\{}\\listaTarefas.txt'.format(userAtual), 'r', encoding='UTF-8')
@@ -362,10 +362,12 @@ def telaGerirTarefas():
 
     listaTemporaria = []
 
+    numLinhas = []
     for i in listaTarefas:
         linha = i.split(';')
         lbLista.insert(END, linha[1])
         listaTemporaria.append([linha[0],linha[1],linha[2],linha[3],linha[4],linha[5],linha[6].split(','),linha[7]])
+        numLinhas.append(linha[0])
     
     lbLista.bind('<<ListboxSelect>>', selecionarTarefa)
 
@@ -426,13 +428,20 @@ def delTarefa(username, numTar):
     lbLista.delete(lbLista.curselection())
 
 def selecionarTarefa(event):
-    global nomeTarefa, categoriaTarefa, calData, lbLista, listaTemporaria, horaLembrete, minutoLembrete
+    global nomeTarefa, categoriaTarefa, calData, lbLista, listaTemporaria, horaLembrete, minutoLembrete, numListaSelecionado
+
+    numListaSelecionado = (lbLista.curselection)
+
     nomeTarefa.set(listaTemporaria[int(str(lbLista.curselection()).replace('(','').replace(',)',''))][1])
     categoriaTarefa.set(listaTemporaria[int(str(lbLista.curselection()).replace('(','').replace(',)',''))][7])
     calData.set_date(listaTemporaria[int(str(lbLista.curselection()).replace('(','').replace(',)',''))][6][0])
     horas = str(listaTemporaria[int(str(lbLista.curselection()).replace('(','').replace(',)',''))][6][1]).split(':')
     horaLembrete.set(horas[0])
     minutoLembrete.set(horas[1])
+
+def atualizarTarefa(username, numTar):
+    print(numTar)
+    ()
 
 def telaConsultarTarefas():
 
