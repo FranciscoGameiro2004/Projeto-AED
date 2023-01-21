@@ -80,7 +80,7 @@ def loginConta(username, txtMenuLoginNome, nameLogin,
                cbGenero,cbTipo):
     #print(username)
     #print(password)
-    global login, userAtual, btnOpcao2, btnOpcao3, btnOpcao4
+    global login, userAtual, btnOpcao2, btnOpcao3, btnOpcao4, numListaSelecionado
     acessos = open(ficheiroUsurios, "r", encoding="utf8")
     linhas = acessos.readlines()
     acessos.close()
@@ -118,6 +118,7 @@ def loginConta(username, txtMenuLoginNome, nameLogin,
                 login = 1
                 msg = "Bem vindo " + username 
                 messagebox.showinfo(title="Estado",message=msg)
+                numListaSelecionado = 0
     elif login == 1:
         #user
         userAtual = ''
@@ -295,7 +296,7 @@ def telaAreaPessoal():
     btnMenuCriar_Login_Modos.place(x=155,y=5)
 
 def telaGerirTarefas():
-    global userAtual, lbLista, nomeTarefa, listaTemporaria, categoriaTarefa, calData, horaLembrete, minutoLembrete
+    global userAtual, lbLista, nomeTarefa, listaTemporaria, categoriaTarefa, calData, horaLembrete, minutoLembrete, numListaSelecionado
 
     panelTarefas = PanedWindow(window, width = 400, height= 450,bg="gray")
     panelTarefas.place(x=300, y= 0)
@@ -353,7 +354,7 @@ def telaGerirTarefas():
     btnRemover = Button(lblTarefas,width=19,height=1,text="Remover", font =("arial",12), command= lambda: delTarefa(userAtual, lbLista.curselection()))
     btnRemover.place(x=187,y=275)
 
-    btnAtualizar = Button(lblTarefas,width=19,height=1,text="Atualizar", font =("arial",12), command= lambda: atualizarTarefa(userAtual, numLinhas[int(str(numListaSelecionado()).replace('(','').replace(',)',''))]))
+    btnAtualizar = Button(lblTarefas,width=19,height=1,text="Atualizar", font =("arial",12), command= lambda: atualizarTarefa(userAtual, numLinhas[numListaSelecionado]))
     btnAtualizar.place(x=187,y=315)
 
     docTarefas = open('files\\users\\{}\\listaTarefas.txt'.format(userAtual), 'r', encoding='UTF-8')
@@ -361,7 +362,7 @@ def telaGerirTarefas():
     docTarefas.close()
 
     listaTemporaria = []
-
+    lbLista.delete(0,END)
     numLinhas = []
     for i in listaTarefas:
         linha = i.split(';')
@@ -397,6 +398,15 @@ def addTarefa(username, tarefa, descrição='', favorito=False, dataAAcionar=Non
     lbLista.insert(END, tarefa)
     ficheiroTarefas.close()
 
+    listaTemporaria = []
+    lbLista.delete(0,END)
+    numLinhas = []
+    for i in listaTarefas:
+        linha = i.split(';')
+        lbLista.insert(END, linha[1])
+        listaTemporaria.append([linha[0],linha[1],linha[2],linha[3],linha[4],linha[5],linha[6].split(','),linha[7]])
+        numLinhas.append(linha[0])
+
 def delTarefa(username, numTar):
     global lbLista
 
@@ -427,22 +437,65 @@ def delTarefa(username, numTar):
 
     lbLista.delete(lbLista.curselection())
 
+    listaTemporaria = []
+    lbLista.delete(0,END)
+    numLinhas = []
+    for i in listaTarefas:
+        linha = i.split(';')
+        lbLista.insert(END, linha[1])
+        listaTemporaria.append([linha[0],linha[1],linha[2],linha[3],linha[4],linha[5],linha[6].split(','),linha[7]])
+        numLinhas.append(linha[0])
+
 def selecionarTarefa(event):
     global nomeTarefa, categoriaTarefa, calData, lbLista, listaTemporaria, horaLembrete, minutoLembrete, numListaSelecionado
     try:
-        numListaSelecionado = (lbLista.curselection)
-
         nomeTarefa.set(listaTemporaria[int(str(lbLista.curselection()).replace('(','').replace(',)',''))][1])
         categoriaTarefa.set(listaTemporaria[int(str(lbLista.curselection()).replace('(','').replace(',)',''))][7])
         calData.set_date(listaTemporaria[int(str(lbLista.curselection()).replace('(','').replace(',)',''))][6][0])
         horas = str(listaTemporaria[int(str(lbLista.curselection()).replace('(','').replace(',)',''))][6][1]).split(':')
         horaLembrete.set(horas[0])
         minutoLembrete.set(horas[1])
+
+        numListaSelecionado = int(str(lbLista.curselection()).replace('(','').replace(',)',''))
+        print(numListaSelecionado)
     except:
-        ()
+        print('Selecionado: {}'.format(numListaSelecionado))
 
 def atualizarTarefa(username, numTar):
+    numTar = int(numTar)
     print(numTar)
+    ficheiroTarefas = open('files\\users\\{}\\listaTarefas.txt'.format(username), 'r', encoding='UTF-8')
+    listaTarefas = ficheiroTarefas.readlines()
+    ficheiroTarefas.close()
+    linhaTarefa = listaTarefas[numTar]
+    tarefa = linhaTarefa.split(';')
+    tarefa[1] = nomeTarefa.get()
+    tarefa[7] = ' ' + categoriaTarefa.get()
+    print(tarefa)
+
+    linhaTarefa=''
+    for i in range(len(tarefa)-1):
+        linhaTarefa += tarefa[i] + ';'
+    linhaTarefa += tarefa[len(tarefa)-1]
+
+    print(linhaTarefa)
+
+    listaTarefas[numTar] = linhaTarefa
+
+    ficheiroTarefas = open('files\\users\\{}\\listaTarefas.txt'.format(username), 'w', encoding='UTF-8')
+
+    for i in listaTarefas:
+        ficheiroTarefas.write(i)
+    ficheiroTarefas.close()
+
+    listaTemporaria = []
+    lbLista.delete(0,END)
+    numLinhas = []
+    for i in listaTarefas:
+        linha = i.split(';')
+        lbLista.insert(END, linha[1])
+        listaTemporaria.append([linha[0],linha[1],linha[2],linha[3],linha[4],linha[5],linha[6].split(','),linha[7]])
+        numLinhas.append(linha[0])
     ()
 
 def telaConsultarTarefas():
