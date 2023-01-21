@@ -117,6 +117,8 @@ def loginConta(username, txtMenuLoginNome, nameLogin,
                 msg = "Bem vindo " + username 
                 messagebox.showinfo(title="Estado",message=msg)
                 numListaSelecionado = 0
+
+                addNotificacoes(userAtual)
     elif login == 1:
         #user
         userAtual = ''
@@ -672,5 +674,32 @@ btnOpcao5.place (x=40, y=365)
 panel2 = PanedWindow(window, bg = "black",width = 500, height = 450)
 panel2.place(x=700 , y=0)
 
+treeNotificacoes = ttk.Treeview(panel2, columns=('Estado','Título'),show='headings')
+treeNotificacoes.heading('Estado', text='Estado')
+treeNotificacoes.column('Estado', width=60, anchor='c')
+
+treeNotificacoes.heading('Título', text='Título')
+treeNotificacoes.column('Título', width=320, anchor='w')
+
+scrollBarNotificacoes = ttk.Scrollbar(panel2, orient='vertical', command=treeNotificacoes.yview())
+treeNotificacoes.configure(yscrollcommand=scrollBarNotificacoes.set)
+scrollBarNotificacoes.place(x=380,y=0, height=230)
+
+treeNotificacoes.place(x=0,y=0)
+treeNotificacoes.insert('','end',values=('fgh', 'aaa'))
+
+btnVerNotficacao = Button(panel2, text='Ver notificação')
+btnVerNotficacao.place(x=10,y=240)
+
+def addNotificacoes(user):
+    global treeNotificacoes
+
+    ficheiroNoticias = open('files\\users\\{}\\noticias.txt'.format(user), 'r', encoding='utf-8')
+    listaNoticias = ficheiroNoticias.readlines()
+    ficheiroNoticias.close()
+
+    for i in listaNoticias:
+        noticia = i.split(';;;')
+        treeNotificacoes.insert('','end',values=(noticia[1], noticia[2]))
 
 window.mainloop()
