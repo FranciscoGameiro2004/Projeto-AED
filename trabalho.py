@@ -29,9 +29,7 @@ if not os.path.exists(pasta):
     os.mkdir(pasta)
 #Verfica a existencia da pasta fim
 
-"""
-#----------------------------------------------------------------#
-"""
+
 def criarConta(username, password,gender,type):
     """
     print("Print Criar Conta")
@@ -71,7 +69,7 @@ def criarConta(username, password,gender,type):
     else:
         msg = 'Já existe uma conta com "{}" como username.'.format(username)
         messagebox.showwarning('Estado', msg)
-#----------------------------------------------------------------#
+
 def loginConta(username, txtMenuLoginNome, nameLogin,
                password, txtMenuLoginSenha, passwordLogin,
                nameInfo, genderInfo, typeInfo, txtDescricao,
@@ -144,10 +142,7 @@ def loginConta(username, txtMenuLoginNome, nameLogin,
         login = 0
         msg = "Volte sempre"
         messagebox.showinfo(title="Estado",message=msg)
-#----------------------------------------------------------------#
-"""
-#----------------------------------------------------------------#
-"""
+
 def checkModo(cbModo,btnMenuCriar_Login_Modos,lblBase,nameInfo,genderInfo,typeInfo,txtDescricao):
     if cbModo.get() == "Registrar":
         print("Registrar")
@@ -155,10 +150,7 @@ def checkModo(cbModo,btnMenuCriar_Login_Modos,lblBase,nameInfo,genderInfo,typeIn
     elif cbModo.get() == "Login":
         print("Login")
         telaAreaPessoalLogin(lblBase,nameInfo, genderInfo, typeInfo, txtDescricao,cbModo,btnMenuCriar_Login_Modos)
-#----------------------------------------------------------------#
-"""
-#----------------------------------------------------------------#
-"""
+
 def telaAreaPessoalCriar(lblBase,nameInfo, genderInfo, typeInfo, txtDescricao):
     #--------------------------------------------------------------------#
     lblMenuCriar = LabelFrame(lblBase,width=295,height=210,text="Criar Conta")
@@ -181,6 +173,7 @@ def telaAreaPessoalCriar(lblBase,nameInfo, genderInfo, typeInfo, txtDescricao):
     generosLista = ["","Masculino", "Feminino", "Outro"]
     generoCriar = StringVar()
     cbGenero = ttk.Combobox(lblMenuCriar, width=12, value=generosLista, textvariable=generoCriar)
+    cbGenero.set("Masculino")
     cbGenero.place(x=20,y=65)
     #----------------------------------------------------------------#
     lblMenuCriarTipo = Label(lblMenuCriar,width=13,height=1,text="Tipos de conta", font = ("arial",12))
@@ -192,7 +185,7 @@ def telaAreaPessoalCriar(lblBase,nameInfo, genderInfo, typeInfo, txtDescricao):
     #----------------------------------------------------------------#
     btnRegistrar = Button(lblMenuCriar,width=12,height=1, text="Registrar", font = ("arial",25),command= lambda: criarConta(nameCriar.get(),passwordCriar.get(),generoCriar.get(),tiposCriar.get()))
     btnRegistrar.place(x = 23, y = 110)
-#----------------------------------------------------------------#
+
 def telaAreaPessoalLogin(lblBase,nameInfo, genderInfo, typeInfo, txtDescricao,cbModo,btnMenuCriar_Login_Modos):
     global login
     #--------------------------------------------------------------------#
@@ -202,13 +195,15 @@ def telaAreaPessoalLogin(lblBase,nameInfo, genderInfo, typeInfo, txtDescricao,cb
     lblMenuLoginNome = Label(lblMenuLogin,width=5,height=1,text="Nome", font = ("arial", 12))
     lblMenuLoginNome.place(x=39,y=5)
     nameLogin = StringVar()
+    nameLogin.set("admin")
     txtMenuLoginNome = Entry(lblMenuLogin,width=15,justify=CENTER,textvariable=nameLogin)
     txtMenuLoginNome.place(x=20,y=25)
     #----------------------------------------------------------------#
     lblMenuLoginSenha = Label(lblMenuLogin,width=5,height=1,text="Senha", font = ("arial", 12))
     lblMenuLoginSenha.place(x=189,y=5)
     passwordLogin = StringVar()
-    txtMenuLoginSenha = Entry(lblMenuLogin,width=15,justify=CENTER, textvariable=passwordLogin)
+    passwordLogin.set("admin")
+    txtMenuLoginSenha = Entry(lblMenuLogin,width=15,justify=CENTER, textvariable=passwordLogin, show="*")
     txtMenuLoginSenha.place(x=170,y=25)
     #----------------------------------------------------------------#
     lblMenuLoginGenero = Label(lblMenuLogin,width=5,height=1,text="Genero", font = ("arial",12))
@@ -232,10 +227,8 @@ def telaAreaPessoalLogin(lblBase,nameInfo, genderInfo, typeInfo, txtDescricao,cb
                                                                                                                         cbModo,btnMenuCriar_Login_Modos,
                                                                                                                         cbGenero,cbTipo))
     btnLogin.place(x = 23, y = 90)
-#----------------------------------------------------------------#
-"""
-#----------------------------------------------------------------#
-"""
+    loginConta(nameLogin.get(), txtMenuLoginNome, nameLogin, passwordLogin.get(), txtMenuLoginSenha, passwordLogin, nameInfo, genderInfo, typeInfo, txtDescricao,btnLogin,cbModo,btnMenuCriar_Login_Modos,cbGenero,cbTipo)
+
 def telaAreaPessoal():
     global generos
     global img
@@ -243,14 +236,11 @@ def telaAreaPessoal():
     panelNomes = PanedWindow(window, width = 400, height= 450,bg="gray")
     panelNomes.place(x=300, y= 0)
 #----------------------------------------------------------------#
-    filemenu = Menu(menubar, tearoff=0)
-    menubar.add_cascade(label="File", menu=filemenu)
-    filemenu.add_command(label="Movimentos")
-    filemenu.add_command(label="Consultas")
-
-    filemenu.add_command(label="CLS", command= lambda: os.system("cls"))
-    filemenu.add_command(label="Exit", command=window.destroy)
-    window.config(menu=filemenu)
+    help = Menu(menubar, tearoff=0)
+    help.add_command(label="Movimentos")
+    help.add_command(label="CLS", command= lambda: os.system("cls"))
+    help.add_command(label="Exit", command=window.destroy)
+    window.config(menu=help)
 #----------------------------------------------------------------#
     ctnImagemPerfil = Canvas(panelNomes,width=60,height=60)
     ctnImagemPerfil.place(x=10,y=10)
@@ -293,6 +283,7 @@ def telaAreaPessoal():
 #---#
     btnMenuCriar_Login_Modos = Button(lblMenuCriar_login,width=15, height=1, text="Selecionar Modo",command = lambda:checkModo(cbModo,btnMenuCriar_Login_Modos,lblMenuCriar_login,nameInfo, genderInfo, typeInfo, txtDescricao))
     btnMenuCriar_Login_Modos.place(x=155,y=5)
+
 
 def telaGerirTarefas():
     global userAtual, lbLista, nomeTarefa, listaTemporaria, categoriaTarefa, calData, horaLembrete, minutoLembrete
@@ -445,6 +436,7 @@ def atualizarTarefa(username, numTar):
     print(numTar)
     ()
 
+
 def telaConsultarTarefas():
 
     panelConsultarTarefas = PanedWindow(window, width = 400, height= 450,bg="gray")
@@ -483,6 +475,106 @@ def telaConsultarTarefas():
         numLinhas.append(linha[0])
     print(numLinhas)
 
+def telaAdmin():
+    global userAtual, lbLista, nomeTarefa, listaTemporaria, categoriaTarefa, calData, horaLembrete, minutoLembrete
+
+    panelTarefas = PanedWindow(window, width = 400, height= 450,bg="gray")
+    panelTarefas.place(x=300, y= 0)
+
+    lblTarefas = LabelFrame(panelTarefas, width=385,height=440)
+    lblTarefas.place(x=5,y=5)
+
+    lblAdmin = LabelFrame(lblTarefas, width=370,height=40)
+    lblAdmin.place(x=5,y=5)
+
+    lblTxtTarefas = Label(lblAdmin,width=8,text="Tarefas", font =("arial",15))
+    lblTxtTarefas.place(x=140,y=5)
+
+    lbListaUser = Listbox(lblTarefas,width =28, height = 23, justify=CENTER)
+    lbListaUser.place(x=5 , y=50)
+
+    lblTxtUser = Label(lblTarefas,width=8,text="Nome", font =("arial",12))
+    lblTxtUser.place(x=240,y=50)
+    User = StringVar()
+    txtUser = Entry(lblTarefas, width=20, font = ("arial",12), textvariable=User)
+    txtUser.place(x = 185, y=70)
+
+    lblTxtPass = Label(lblTarefas,width=8,text="Password", font =("arial",12))
+    lblTxtPass.place(x=240,y=95)
+    Pass = StringVar()
+    txtPass = Entry(lblTarefas, width=20, font = ("arial",12), textvariable=Pass)
+    txtPass.place(x = 185, y=115)
+
+    lblTxtGender = Label(lblTarefas,width=8,text="Genero", font =("arial",12))
+    lblTxtGender.place(x = 240, y = 138)
+    GenderLista = ["","Masculino", "Feminino", "Outro"]
+    Gender = StringVar()
+    cbGender = ttk.Combobox(lblTarefas, width=18, values=GenderLista, textvariable=Gender, font =("arial",12), state="readonly")
+    cbGender.place(x = 185,y = 160)
+
+    lblTxtType = Label(lblTarefas,width=8,text="Tipo", font =("arial",12))
+    lblTxtType.place(x = 240, y = 187)
+    TypeLista = ["","Comum","Profissional"]
+    TypeAc = StringVar()
+    cbType = ttk.Combobox(lblTarefas, width=18, values=TypeLista, textvariable=TypeAc, font =("arial",12), state="readonly")
+    cbType.place(x = 185,y = 209)
+
+
+    btnAdcionar = Button(lblTarefas,width=18,height=1,text="Adcionar", font =("arial",12),command= lambda: criarConta(User.get(),Pass.get(),Gender.get(),TypeAc.get()))
+    btnAdcionar.place(x=187,y=235)
+    
+    btnRemover = Button(lblTarefas,width=19,height=1,text="Remover", font =("arial",12))
+    btnRemover.place(x=187,y=275)
+
+    btnAtualizar = Button(lblTarefas,width=19,height=1,text="Atualizar", font =("arial",12))
+    btnAtualizar.place(x=187,y=315)
+    
+
+    acessos = open(ficheiroUsurios, "r", encoding="utf8")
+    linhas = acessos.readlines()
+    acessos.close()
+    os.system("cls")
+    for linha in linhas:
+        linha = linha.split(";")
+        print(linha[0])
+        lbListaUser.insert(END,linha[0])
+        atualizarListaAdmin(lbListaUser)
+
+def atualizarListaAdmin(lista):
+    linhaLista = ""
+    lista.delete(0,END)
+    acessos = open(ficheiroUsurios, "r", encoding="utf8")
+    linhas = acessos.readlines()
+    acessos.close()
+    os.system("cls")
+    for linha in linhas:
+        print(linha)
+        linha = linha.split(";")
+        print(linha[0])
+        lista.insert(END, linha[0])
+
+
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #codigo principal inicio
 window = Tk()
 
@@ -498,19 +590,11 @@ window.title("Programa")
 #-----------------------------------------------------------------------------------------------------------------------------#
 menubar = Menu(window)
 #-----------------------------------------------------------------------------------------------------------------------------#
-filemenu = Menu(menubar, tearoff=0)
-
-menubar.add_cascade(label="File", menu=filemenu)
-
-filemenu.add_command(label="Movimentos")
-
-filemenu.add_command(label="Consultas")
-
-filemenu.add_command(label="CLS", command= lambda: os.system("cls"))
-
-filemenu.add_command(label="Exit", command=window.destroy)
-
-window.config(menu=filemenu)
+help = Menu(menubar, tearoff=0)
+help.add_command(label="Atualizar")
+help.add_command(label="CLS", command= lambda: os.system("cls"))
+help.add_command(label="Exit", command=window.destroy)
+window.config(menu=help)
 
 #-----------------------------------------------------------------------------------------------------------------------------#
 panel1 = PanedWindow(window, bg = "black",width = 300, height = 450)
@@ -537,7 +621,7 @@ btnOpcao3.place (x=40, y=185)
 imageIco4 = PhotoImage(file = "imagens/admin_user_icon.png" )
 btnOpcao4 = Button(panel1, text = "Admin", image = imageIco4, compound=LEFT, relief = "sunken", 
                     width = 200, height = 70, font="calibri, 11",
-                    command=lambda: print("btnOpcao4"), state='disabled')
+                    command=telaAdmin, state='disabled')
 btnOpcao4.place (x=40, y=275)
 #-----------------------------------------------------------------------------------------------------------------------------#
 imageIco5 = PhotoImage(file = "imagens/exit.png" )
