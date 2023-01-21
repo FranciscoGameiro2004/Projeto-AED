@@ -429,15 +429,17 @@ def delTarefa(username, numTar):
 
 def selecionarTarefa(event):
     global nomeTarefa, categoriaTarefa, calData, lbLista, listaTemporaria, horaLembrete, minutoLembrete, numListaSelecionado
+    try:
+        numListaSelecionado = (lbLista.curselection)
 
-    numListaSelecionado = (lbLista.curselection)
-
-    nomeTarefa.set(listaTemporaria[int(str(lbLista.curselection()).replace('(','').replace(',)',''))][1])
-    categoriaTarefa.set(listaTemporaria[int(str(lbLista.curselection()).replace('(','').replace(',)',''))][7])
-    calData.set_date(listaTemporaria[int(str(lbLista.curselection()).replace('(','').replace(',)',''))][6][0])
-    horas = str(listaTemporaria[int(str(lbLista.curselection()).replace('(','').replace(',)',''))][6][1]).split(':')
-    horaLembrete.set(horas[0])
-    minutoLembrete.set(horas[1])
+        nomeTarefa.set(listaTemporaria[int(str(lbLista.curselection()).replace('(','').replace(',)',''))][1])
+        categoriaTarefa.set(listaTemporaria[int(str(lbLista.curselection()).replace('(','').replace(',)',''))][7])
+        calData.set_date(listaTemporaria[int(str(lbLista.curselection()).replace('(','').replace(',)',''))][6][0])
+        horas = str(listaTemporaria[int(str(lbLista.curselection()).replace('(','').replace(',)',''))][6][1]).split(':')
+        horaLembrete.set(horas[0])
+        minutoLembrete.set(horas[1])
+    except:
+        ()
 
 def atualizarTarefa(username, numTar):
     print(numTar)
