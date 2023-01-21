@@ -120,6 +120,8 @@ def loginConta(username, txtMenuLoginNome, nameLogin,
                 msg = "Bem vindo " + username 
                 messagebox.showinfo(title="Estado",message=msg)
                 numListaSelecionado = 0
+
+                addNotificacoes(userAtual)
     elif login == 1:
         #user
         userAtual = ''
@@ -141,6 +143,7 @@ def loginConta(username, txtMenuLoginNome, nameLogin,
         btnOpcao2.config(state='disabled')
         btnOpcao3.config(state='disabled')
         btnOpcao4.config(state='disabled')
+        treeNotificacoes.delete(*treeNotificacoes.get_children())
 
         btnLogin.config(text = "Login")
         login = 0
@@ -727,5 +730,98 @@ btnOpcao5.place (x=40, y=365)
 panel2 = PanedWindow(window, bg = "black",width = 500, height = 450)
 panel2.place(x=700 , y=0)
 
+treeNotificacoes = ttk.Treeview(panel2, columns=('Estado','Título', 'Num'),show='headings')
+treeNotificacoes.heading('Estado', text='Estado')
+treeNotificacoes.column('Estado', width=60, anchor='c')
+
+treeNotificacoes.heading('Título', text='Título')
+treeNotificacoes.column('Título', width=320, anchor='w')
+
+treeNotificacoes.column('Num', width=0, anchor='w')
+
+scrollBarNotificacoes = ttk.Scrollbar(panel2, orient='vertical', command=treeNotificacoes.yview())
+treeNotificacoes.configure(yscrollcommand=scrollBarNotificacoes.set)
+scrollBarNotificacoes.place(x=380,y=0, height=230)
+
+treeNotificacoes.place(x=0,y=0)
+
+def verNoticia():
+    global treeNotificacoes, lblTituloNoticia, lblLeadNoticia, txtNoticia, panelNoticia
+
+    row_id = treeNotificacoes.focus()
+    noticia = int(treeNotificacoes.item(row_id)["values"][2])
+    ficheiroNoticias = open('files\\users\\{}\\noticias.txt'.format(userAtual), 'r', encoding='utf-8')
+    listaNoticias = ficheiroNoticias.readlines()
+    ficheiroNoticias.close()
+
+    linhaNoticia = listaNoticias[noticia]
+    lblTituloNoticia.config(text=linhaNoticia.split(';;;')[2])
+    lblLeadNoticia.config(text=linhaNoticia.split(';;;')[3])
+    txtNoticia.config(state='normal')
+    txtNoticia.delete('0.0','end')
+    txtNoticia.insert('insert', linhaNoticia.split(';;;')[4])
+    txtNoticia.config(state='disabled')
+
+    linhaNoticia = linhaNoticia.replace('Não Lido;;;','Lido;;;')
+    listaNoticias[noticia] = linhaNoticia
+
+    ficheiroNoticias = open('files\\users\\{}\\noticias.txt'.format(userAtual), 'w', encoding='utf-8')
+    for i in listaNoticias:
+        ficheiroNoticias.write(i)
+    ficheiroNoticias.close()
+    addNotificacoes(userAtual)
+
+    panelNoticia.place(x=700, y=0)
+
+    print(linhaNoticia)
+
+btnVerNotficacao = Button(panel2, text='Ver notificação', command=verNoticia)
+btnVerNotficacao.place(x=10,y=240)
+
+btnVerNaoLido = Button(panel2, text='Ver não lidos', command=lambda:addNotificacoes(userAtual, filtro='Não Lido'))
+btnVerNaoLido.place(x=120,y=240)
+
+btnVerLido = Button(panel2, text='Ver lidos', command=lambda:addNotificacoes(userAtual, filtro='Lido'))
+btnVerLido.place(x=210,y=240)
+
+btnVerTodos = Button(panel2, text='Ver lidos', command=lambda:addNotificacoes(userAtual))
+btnVerTodos.place(x=290,y=240)
+
+def addNotificacoes(user, filtro=None):
+    global treeNotificacoes
+    
+    ficheiroNoticias = open('files\\users\\{}\\noticias.txt'.format(user), 'r', encoding='utf-8')
+    listaNoticias = ficheiroNoticias.readlines()
+    ficheiroNoticias.close()
+    numNoticia = 0
+    treeNotificacoes.delete(*treeNotificacoes.get_children())
+    for i in listaNoticias:
+        noticia = i.split(';;;')
+        if filtro==None:
+            treeNotificacoes.insert('','end',values=(noticia[0], noticia[2], numNoticia))
+        elif filtro=='Não Lido':
+            if noticia[0] == 'Não Lido':
+                treeNotificacoes.insert('','end',values=(noticia[0], noticia[2], numNoticia))
+        elif filtro=='Lido':
+            if noticia[0] == 'Lido':
+                treeNotificacoes.insert('','end',values=(noticia[0], noticia[2], numNoticia))
+        numNoticia += 1
+    
+    listaNoticias.clear()
+
+panelNoticia = PanedWindow(window, bg = "gray",width = 500, height = 450)
+
+lblTituloNoticia = Label(panelNoticia, text='Título notícia', fg='black', bg='gray', font=('Helvetica', 24))
+lblTituloNoticia.place(x=0,y=30)
+lblLeadNoticia = Label(panelNoticia, text='Título notícia', fg='black', bg='gray', font=('Helvetica', 16))
+lblLeadNoticia.place(x=0,y=70)
+
+txtNoticia = Text(panelNoticia, width=50, height=20)
+txtNoticia.place(x=0,y=100)
+txtNoticia.insert('insert', 'Notícia')
+txtNoticia.config(state='disabled')
+
+btnFechar = Button(panelNoticia, text='Fechar', command= lambda: panelNoticia.place_forget())
+btnFechar.place(x=0,y=0)
 
 window.mainloop()
