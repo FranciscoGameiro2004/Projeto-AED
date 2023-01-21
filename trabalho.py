@@ -582,29 +582,21 @@ def telaAdmin():
     btnAtualizar = Button(lblTarefas,width=19,height=1,text="Atualizar", font =("arial",12))
     btnAtualizar.place(x=187,y=315)
     
-
     acessos = open(ficheiroUsurios, "r", encoding="utf8")
     linhas = acessos.readlines()
     acessos.close()
+
     os.system("cls")
     for linha in linhas:
         linha = linha.split(";")
         print(linha[0])
         lbListaUser.insert(END,linha[0])
-        atualizarListaAdmin(lbListaUser)
+    lbListaUser.delete(0,END)
 
-def atualizarListaAdmin(lista):
-    linhaLista = ""
-    lista.delete(0,END)
-    acessos = open(ficheiroUsurios, "r", encoding="utf8")
-    linhas = acessos.readlines()
-    acessos.close()
-    os.system("cls")
     for linha in linhas:
-        print(linha)
         linha = linha.split(";")
         print(linha[0])
-        lista.insert(END, linha[0])
+        lbListaUser.insert(END,linha[0])
 
 
 
@@ -682,5 +674,9 @@ btnOpcao5 = Button(panel1, text = "Sair", image = imageIco5, compound=LEFT, reli
                     width = 200, height = 70, font="calibri, 11",
                     command=window.destroy)
 btnOpcao5.place (x=40, y=365)
+
+panel2 = PanedWindow(window, bg = "black",width = 500, height = 450)
+panel2.place(x=700 , y=0)
+
 
 window.mainloop()
