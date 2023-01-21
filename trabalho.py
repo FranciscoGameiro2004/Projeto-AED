@@ -707,6 +707,15 @@ def verNoticia():
     txtNoticia.insert('insert', linhaNoticia.split(';;;')[4])
     txtNoticia.config(state='disabled')
 
+    linhaNoticia = linhaNoticia.replace('Não Lido;;;','Lido;;;')
+    listaNoticias[noticia] = linhaNoticia
+
+    ficheiroNoticias = open('files\\users\\{}\\noticias.txt'.format(userAtual), 'w', encoding='utf-8')
+    for i in listaNoticias:
+        ficheiroNoticias.write(i)
+    ficheiroNoticias.close()
+    addNotificacoes(userAtual)
+
     panelNoticia.place(x=700, y=0)
 
     print(linhaNoticia)
@@ -717,8 +726,11 @@ btnVerNotficacao.place(x=10,y=240)
 btnVerNaoLido = Button(panel2, text='Ver não lidos', command=lambda:addNotificacoes(userAtual, filtro='Não Lido'))
 btnVerNaoLido.place(x=120,y=240)
 
-btnVerLido = Button(panel2, text='Ver não lidos', command=lambda:addNotificacoes(userAtual, filtro='Lido'))
-btnVerLido.place(x=230,y=240)
+btnVerLido = Button(panel2, text='Ver lidos', command=lambda:addNotificacoes(userAtual, filtro='Lido'))
+btnVerLido.place(x=210,y=240)
+
+btnVerTodos = Button(panel2, text='Ver lidos', command=lambda:addNotificacoes(userAtual))
+btnVerTodos.place(x=290,y=240)
 
 def addNotificacoes(user, filtro=None):
     global treeNotificacoes
