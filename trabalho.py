@@ -714,17 +714,33 @@ def verNoticia():
 btnVerNotficacao = Button(panel2, text='Ver notificação', command=verNoticia)
 btnVerNotficacao.place(x=10,y=240)
 
-def addNotificacoes(user):
-    global treeNotificacoes
+btnVerNaoLido = Button(panel2, text='Ver não lidos', command=lambda:addNotificacoes(userAtual, filtro='Não Lido'))
+btnVerNaoLido.place(x=120,y=240)
 
+btnVerLido = Button(panel2, text='Ver não lidos', command=lambda:addNotificacoes(userAtual, filtro='Lido'))
+btnVerLido.place(x=230,y=240)
+
+def addNotificacoes(user, filtro=None):
+    global treeNotificacoes
+    
     ficheiroNoticias = open('files\\users\\{}\\noticias.txt'.format(user), 'r', encoding='utf-8')
     listaNoticias = ficheiroNoticias.readlines()
     ficheiroNoticias.close()
     numNoticia = 0
+    treeNotificacoes.delete(*treeNotificacoes.get_children())
     for i in listaNoticias:
         noticia = i.split(';;;')
-        treeNotificacoes.insert('','end',values=(noticia[0], noticia[2], numNoticia))
+        if filtro==None:
+            treeNotificacoes.insert('','end',values=(noticia[0], noticia[2], numNoticia))
+        elif filtro=='Não Lido':
+            if noticia[0] == 'Não Lido':
+                treeNotificacoes.insert('','end',values=(noticia[0], noticia[2], numNoticia))
+        elif filtro=='Lido':
+            if noticia[0] == 'Lido':
+                treeNotificacoes.insert('','end',values=(noticia[0], noticia[2], numNoticia))
         numNoticia += 1
+    
+    listaNoticias.clear()
 
 panelNoticia = PanedWindow(window, bg = "gray",width = 500, height = 450)
 
