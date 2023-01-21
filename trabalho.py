@@ -553,7 +553,7 @@ def delUser(listaBase):
         print(linha)
         if linha[0] == user:
             print("confirma")
-            """
+            
             pastaUser ='files/users/' + user
             print(pastaUser)
             ficheiroUserLIne = pastaUser +  "/listaTarefas.txt"
@@ -562,17 +562,20 @@ def delUser(listaBase):
             os.remove(ficheiroUserNoticias)
             os.rmdir(pastaUser)
             listaBase.delete(listaBase.curselection())
-            """
-    ptr = 0
-    acessos = open(ficheiroUsurios, "w", encoding="utf8")
-    for i in listaBase.curselection():
-        index = i
-        print(index)
-    for linha in linhas:
-        print(linha)
-        if ptr != index:
             
-    acessos.close()
+        ptr = 0
+        acessos = open(ficheiroUsurios, "w", encoding="utf8")
+        for i in listaBase.curselection():
+            index = i
+            print(index)
+        for linha in linhas:
+            print(linha)
+            print(index)
+            if ptr != index:
+                print("funciona")
+                acessos.write(linha)
+            ptr += 1
+        acessos.close()
 
 
 
@@ -601,7 +604,7 @@ def telaAdmin():
     lblTxtTarefas = Label(lblAdmin,width=8,text="Tarefas", font =("arial",15))
     lblTxtTarefas.place(x=140,y=5)
 
-    lbListaUser = Listbox(lblTarefas,width =28, height = 23, justify=CENTER)
+    lbListaUser = Listbox(lblTarefas,width =28, height = 10, justify=CENTER)
     lbListaUser.place(x=5 , y=50)
 
     lblTxtUser = Label(lblTarefas,width=8,text="Nome", font =("arial",12))
