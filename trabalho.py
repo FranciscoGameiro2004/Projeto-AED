@@ -29,8 +29,7 @@ if not os.path.exists(pasta):
     os.mkdir(pasta)
 #Verfica a existencia da pasta fim
 
-
-def criarConta(username, password,gender,type):
+def criarConta(username, password,gender,type,lista):
     """
     print("Print Criar Conta")
     print(username)
@@ -63,6 +62,10 @@ def criarConta(username, password,gender,type):
             Noticias = open(ficheiroUserNoticias, "a", encoding="utf8")
             Noticias.write("Primeira notícia\n")
             Noticias.close()
+
+            print(username)
+
+            lista.insert(END, username)
         else:
             msg = 'Não é possível a utilização de caracteres inválidos\nCatacteres inválidos: ;'
             messagebox.showwarning('Estado', msg)
@@ -184,7 +187,8 @@ def telaAreaPessoalCriar(lblBase,nameInfo, genderInfo, typeInfo, txtDescricao):
     cbTipo = ttk.Combobox(lblMenuCriar, width=12, value=tiposLista, textvariable=tiposCriar)
     cbTipo.place(x=170,y=65)
     #----------------------------------------------------------------#
-    btnRegistrar = Button(lblMenuCriar,width=12,height=1, text="Registrar", font = ("arial",25),command= lambda: criarConta(nameCriar.get(),passwordCriar.get(),generoCriar.get(),tiposCriar.get()))
+    
+    btnRegistrar = Button(lblMenuCriar,width=12,height=1, text="Registrar", font = ("arial",25),command= lambda: criarConta(nameCriar.get(),passwordCriar.get(),generoCriar.get(),tiposCriar.get(),nameCriar.get()))
     btnRegistrar.place(x = 23, y = 110)
 
 def telaAreaPessoalLogin(lblBase,nameInfo, genderInfo, typeInfo, txtDescricao,cbModo,btnMenuCriar_Login_Modos):
@@ -284,7 +288,6 @@ def telaAreaPessoal():
 #---#
     btnMenuCriar_Login_Modos = Button(lblMenuCriar_login,width=15, height=1, text="Selecionar Modo",command = lambda:checkModo(cbModo,btnMenuCriar_Login_Modos,lblMenuCriar_login,nameInfo, genderInfo, typeInfo, txtDescricao))
     btnMenuCriar_Login_Modos.place(x=155,y=5)
-
 
 def telaGerirTarefas():
     global userAtual, lbLista, nomeTarefa, listaTemporaria, categoriaTarefa, calData, horaLembrete, minutoLembrete, numListaSelecionado
@@ -489,7 +492,6 @@ def atualizarTarefa(username, numTar):
         numLinhas.append(linha[0])
     ()
 
-
 def telaConsultarTarefas():
 
     panelConsultarTarefas = PanedWindow(window, width = 400, height= 450,bg="gray")
@@ -527,6 +529,59 @@ def telaConsultarTarefas():
         tree.insert('','end',values=(linha[1],dateConvert(linha[3]),linha[7].replace('\n',''),linha[5]))
         numLinhas.append(linha[0])
     print(numLinhas)
+
+def delUser(listaBase):
+    pastaUser =""
+    pos = listaBase.curselection()
+    print(pos)
+    
+    os.system("cls")
+    print(listaBase)
+    user = listaBase.get(pos)
+    print(user)
+    acessos = open(ficheiroUsurios, "r", encoding="utf8")
+    linhas = acessos.readlines()
+    acessos.close()
+    
+    
+    os.system("cls")
+    for linha in linhas:
+        linha = linha.split(";")
+        print(linha)
+        if linha[0] == user:
+            print("confirma")
+            """
+            pastaUser ='files/users/' + user
+            print(pastaUser)
+            ficheiroUserLIne = pastaUser +  "/listaTarefas.txt"
+            os.remove(ficheiroUserLIne)
+            ficheiroUserNoticias = pastaUser +  "/noticias.txt"
+            os.remove(ficheiroUserNoticias)
+            os.rmdir(pastaUser)
+            listaBase.delete(listaBase.curselection())
+            """
+    ptr = 0
+    acessos = open(ficheiroUsurios, "w", encoding="utf8")
+    for i in listaBase.curselection():
+        index = i
+        print(index)
+    for linha in linhas:
+        print(linha)
+        if ptr != index:
+            
+    acessos.close()
+
+
+
+
+
+
+    
+
+
+
+
+
 
 def telaAdmin():
     global userAtual, lbLista, nomeTarefa, listaTemporaria, categoriaTarefa, calData, horaLembrete, minutoLembrete
@@ -573,10 +628,10 @@ def telaAdmin():
     cbType.place(x = 185,y = 209)
 
 
-    btnAdcionar = Button(lblTarefas,width=18,height=1,text="Adcionar", font =("arial",12),command= lambda: criarConta(User.get(),Pass.get(),Gender.get(),TypeAc.get()))
+    btnAdcionar = Button(lblTarefas,width=18,height=1,text="Adcionar", font =("arial",12),command= lambda: criarConta(User.get(),Pass.get(),Gender.get(),TypeAc.get(),lbListaUser))
     btnAdcionar.place(x=187,y=235)
     
-    btnRemover = Button(lblTarefas,width=19,height=1,text="Remover", font =("arial",12))
+    btnRemover = Button(lblTarefas,width=19,height=1,text="Remover", font =("arial",12), command= lambda: delUser(lbListaUser))
     btnRemover.place(x=187,y=275)
 
     btnAtualizar = Button(lblTarefas,width=19,height=1,text="Atualizar", font =("arial",12))
@@ -585,12 +640,12 @@ def telaAdmin():
     acessos = open(ficheiroUsurios, "r", encoding="utf8")
     linhas = acessos.readlines()
     acessos.close()
-
     os.system("cls")
     for linha in linhas:
         linha = linha.split(";")
         print(linha[0])
-        lbListaUser.insert(END,linha[0])
+        lbListaUser.insert("end",linha[0])
+
 
 
 
