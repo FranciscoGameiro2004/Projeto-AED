@@ -295,7 +295,7 @@ def telaAreaPessoal():
     btnMenuCriar_Login_Modos.place(x=155,y=5)
 
 def telaGerirTarefas():
-    global userAtual, lbLista
+    global userAtual, lbLista, nomeTarefa, listaTemporaria, categoriaTarefa, calData, horaLembrete, minutoLembrete
 
     panelTarefas = PanedWindow(window, width = 400, height= 450,bg="gray")
     panelTarefas.place(x=300, y= 0)
@@ -314,7 +314,8 @@ def telaGerirTarefas():
 
     lblTxtNome = Label(lblTarefas,width=8,text="Nome", font =("arial",12))
     lblTxtNome.place(x=240,y=50)
-    txtTarefa = Entry(lblTarefas, width=20, font = ("arial",12))
+    nomeTarefa = StringVar()
+    txtTarefa = Entry(lblTarefas, width=20, font = ("arial",12), textvariable=nomeTarefa)
     txtTarefa.place(x = 185, y=70)
 
     lblTxtData = Label(lblTarefas,width=8,text="Data", font =("arial",12))
@@ -325,17 +326,20 @@ def telaGerirTarefas():
 
     lblDoisPontos =Label(lblTarefas,width=1,text=":")
     lblDoisPontos.place(x=323,y=115)
-    spnBxHora = Spinbox(lblTarefas, width=3, from_=0, to=23)
+    horaLembrete = StringVar()
+    spnBxHora = Spinbox(lblTarefas, width=3, from_=0, to=23, textvariable=horaLembrete)
     spnBxHora.place(x=290,y=115)
-    spnBxMinuto = Spinbox(lblTarefas, width=3, from_=0, to=59)
+    minutoLembrete = StringVar()
+    spnBxMinuto = Spinbox(lblTarefas, width=3, from_=0, to=59, textvariable=minutoLembrete)
     spnBxMinuto.place(x=340,y=115)
     
     #txtData = Entry(lblTarefas, width=20, font = ("arial",12))
     #txtData.place(x = 185, y=115)
-
+    
     lblTxtCategoria = Label(lblTarefas,width=8,text="Categoria", font =("arial",12))
     lblTxtCategoria.place(x=240,y=138)
-    txtCategoria = Entry(lblTarefas, width=20, font = ("arial",12))
+    categoriaTarefa = StringVar()
+    txtCategoria = Entry(lblTarefas, width=20, font = ("arial",12), textvariable=categoriaTarefa)
     txtCategoria.place(x = 185, y=160)
 
     lblTxtFavorito = Label(lblTarefas,width=8,text="Favorito", font =("arial",12))
@@ -343,7 +347,7 @@ def telaGerirTarefas():
     txtFavorito = Entry(lblTarefas, width=20, font = ("arial",12))
     txtFavorito.place(x = 185, y=205)
 
-    btnAdcionar = Button(lblTarefas,width=19,height=1,text="Adcionar", font =("arial",12),command= lambda: addTarefa(userAtual, txtTarefa.get(), categoria=txtCategoria.get(),dataAAcionar= dateConvert(str(calData.get_date()))))
+    btnAdcionar = Button(lblTarefas,width=19,height=1,text="Adcionar", font =("arial",12),command= lambda: addTarefa(userAtual, txtTarefa.get(), categoria=txtCategoria.get(),dataAAcionar= str(calData.get_date()),horaAAcionar='{}:{}'.format(spnBxHora.get(),spnBxMinuto.get())))
     btnAdcionar.place(x=187,y=235)
     
     btnRemover = Button(lblTarefas,width=19,height=1,text="Remover", font =("arial",12), command= lambda: delTarefa(userAtual, lbLista.curselection()))
@@ -356,13 +360,18 @@ def telaGerirTarefas():
     listaTarefas = docTarefas.readlines()
     docTarefas.close()
 
+    listaTemporaria = []
+
     for i in listaTarefas:
         linha = i.split(';')
         lbLista.insert(END, linha[1])
+        listaTemporaria.append([linha[0],linha[1],linha[2],linha[3],linha[4],linha[5],linha[6].split(','),linha[7]])
+    
+    lbLista.bind('<<ListboxSelect>>', selecionarTarefa)
 
 def addTarefa(username, tarefa, descrição='', favorito=False, dataAAcionar=None, horaAAcionar=None, categoria=None):
     from datetime import date, datetime
-    global lbLista
+    global lbLista, listaTemporaria
 
     while True:
         try:
@@ -381,7 +390,8 @@ def addTarefa(username, tarefa, descrição='', favorito=False, dataAAcionar=Non
     hora = datetime.now().strftime('%H:%M:%S')
     
     
-    ficheiroTarefas.write('{};{};{};{};{};{};{},{};{}\n'.format(numTarefa,tarefa,descrição,data,hora,favorito,dataAAcionar,horaAAcionar,categoria))
+    ficheiroTarefas.write('{};{};{};{};{};{};{},{};{}\n'.format(numTarefa,tarefa,descrição,data,hora,favorito,dateConvert(dataAAcionar),horaAAcionar,categoria))
+    listaTemporaria.append([numTarefa,tarefa,descrição,data,hora,favorito,[dateConvert(dataAAcionar),horaAAcionar],categoria])
     lbLista.insert(END, tarefa)
     ficheiroTarefas.close()
 
@@ -414,6 +424,15 @@ def delTarefa(username, numTar):
     ficheiroTarefas.close()
 
     lbLista.delete(lbLista.curselection())
+
+def selecionarTarefa(event):
+    global nomeTarefa, categoriaTarefa, calData, lbLista, listaTemporaria, horaLembrete, minutoLembrete
+    nomeTarefa.set(listaTemporaria[int(str(lbLista.curselection()).replace('(','').replace(',)',''))][1])
+    categoriaTarefa.set(listaTemporaria[int(str(lbLista.curselection()).replace('(','').replace(',)',''))][7])
+    calData.set_date(listaTemporaria[int(str(lbLista.curselection()).replace('(','').replace(',)',''))][6][0])
+    horas = str(listaTemporaria[int(str(lbLista.curselection()).replace('(','').replace(',)',''))][6][1]).split(':')
+    horaLembrete.set(horas[0])
+    minutoLembrete.set(horas[1])
 
 def telaConsultarTarefas():
 
