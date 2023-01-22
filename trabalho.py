@@ -562,8 +562,6 @@ def delUser(listaBase):
     pastaUser =""
     pos = listaBase.curselection()
     print(pos)
-    
-    os.system("cls")
     print(listaBase)
     user = listaBase.get(pos)
     print(user)
@@ -602,6 +600,30 @@ def delUser(listaBase):
             ptr += 1
         acessos.close()
 
+def atualizarUser(username, password,gender,type,listaBase):
+    os.system("cls")
+
+    acessos = open(ficheiroUsurios, "r", encoding="utf8")
+    linhas = acessos.readlines()
+    acessos.close()
+
+    pos = listaBase.curselection()
+    print(pos)
+    print(listaBase)
+    user = listaBase.get(pos)
+    print(user)
+
+    for i in listaBase.curselection():
+        index = i
+        print(index)
+    
+    ptr = 0
+    acessos = open(ficheiroUsurios, "w", encoding="utf8")
+    for linha in linhas:
+        linha = linha.split(";")
+        print(linha)
+
+    acessos.close()
 
 
 def telaAdmin():
@@ -621,6 +643,9 @@ def telaAdmin():
 
     lbListaUser = Listbox(lblTarefas,width =28, height = 10, justify=CENTER)
     lbListaUser.place(x=5 , y=50)
+
+    Francisco = Listbox(lblTarefas,width =28, height = 10, justify=CENTER)
+    Francisco.place(x=5 , y=220)
 
     lblTxtUser = Label(lblTarefas,width=8,text="Nome", font =("arial",12))
     lblTxtUser.place(x=240,y=50)
@@ -655,7 +680,7 @@ def telaAdmin():
     btnRemover = Button(lblTarefas,width=19,height=1,text="Remover", font =("arial",12), command= lambda: delUser(lbListaUser))
     btnRemover.place(x=187,y=275)
 
-    btnAtualizar = Button(lblTarefas,width=19,height=1,text="Atualizar", font =("arial",12))
+    btnAtualizar = Button(lblTarefas,width=19,height=1,text="Atualizar", font =("arial",12),command= lambda: atualizarUser(User.get(),Pass.get(),Gender.get(),TypeAc.get(),lbListaUser))
     btnAtualizar.place(x=187,y=315)
     
     acessos = open(ficheiroUsurios, "r", encoding="utf8")
