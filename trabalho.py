@@ -600,12 +600,12 @@ def delUser(listaBase):
             ptr += 1
         acessos.close()
 
-def atualizarUser(username, password,gender,type,listaBase):
+def atualizarUser(username, password,gender,typeL,listaBase):
     os.system("cls")
 
-    acessos = open(ficheiroUsurios, "r", encoding="utf8")
-    linhas = acessos.readlines()
-    acessos.close()
+    acessosInicial = open(ficheiroUsurios, "r", encoding="utf8")
+    linhas = acessosInicial.readlines()
+    acessosInicial.close()
 
     pos = listaBase.curselection()
     print(pos)
@@ -613,18 +613,36 @@ def atualizarUser(username, password,gender,type,listaBase):
     user = listaBase.get(pos)
     print(user)
 
+    acessos = open(ficheiroUsurios, "w", encoding="utf8")
+    acessos.close()
+    linhaFinal = ""
+    ptr = 0
     for i in listaBase.curselection():
         index = i
         print(index)
-    
-    ptr = 0
-    acessos = open(ficheiroUsurios, "w", encoding="utf8")
+    os.system("cls")
     for linha in linhas:
-        linha = linha.split(";")
         print(linha)
+        linha = linha.split(";")
+        print(linha)   
+        print("\n") 
+        acessos = open(ficheiroUsurios, "a", encoding="utf8")
+        if ptr == index:
+            print("ptr == index")
+            linha[0] = username
+            linha[1] = password
+            linha[2] = gender
+            linha[3] = typeL
+            linhaFinal = linha[0] + ";" + linha[1] + ";" + linha[2] + ";" + linha[3] + ";" + linha[4]
+            print(linhaFinal)
+            acessos.write(linhaFinal)
+            acessos.close()
+        else:
+            linhaFinal =  linha[0] + ";" + linha[1] + ";" + linha[2] + ";" + linha[3] + ";" + linha[4]
+            acessos.write(linhaFinal)
+            acessos.close()
 
-    acessos.close()
-
+        ptr += 1
 
 def telaAdmin():
     global userAtual, lbLista, nomeTarefa, listaTemporaria, categoriaTarefa, calData, horaLembrete, minutoLembrete
