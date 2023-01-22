@@ -580,8 +580,6 @@ def delUser(listaBase):
 
 
 
-
-
     
 
 
