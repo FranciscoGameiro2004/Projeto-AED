@@ -122,6 +122,12 @@ def loginConta(username, txtMenuLoginNome, nameLogin,
                 numListaSelecionado = 0
 
                 addNotificacoes(userAtual)
+                atualizarLembretes(userAtual)
+                btnVerNotficacao.config(state='normal')
+                btnVerNaoLido.config(state='normal')
+                btnVerLido.config(state='normal')
+                btnVerTodos.config(state='normal')
+                btnAtualizarLembretes.config(state='normal')
     elif login == 1:
         #user
         userAtual = ''
@@ -144,6 +150,12 @@ def loginConta(username, txtMenuLoginNome, nameLogin,
         btnOpcao3.config(state='disabled')
         btnOpcao4.config(state='disabled')
         treeNotificacoes.delete(*treeNotificacoes.get_children())
+        treeLembretes.delete(*treeLembretes.get_children())
+        btnVerNotficacao.config(state='disabled')
+        btnVerNaoLido.config(state='disabled')
+        btnVerLido.config(state='disabled')
+        btnVerTodos.config(state='disabled')
+        btnAtualizarLembretes.config(state='disabled')
 
         btnLogin.config(text = "Login")
         login = 0
@@ -293,7 +305,7 @@ def telaAreaPessoal():
     btnMenuCriar_Login_Modos.place(x=155,y=5)
 
 def telaGerirTarefas():
-    global userAtual, lbLista, nomeTarefa, listaTemporaria, categoriaTarefa, calData, horaLembrete, minutoLembrete, numListaSelecionado
+    global userAtual, lbLista, nomeTarefa, listaTemporaria, categoriaTarefa, calData, horaLembrete, minutoLembrete, numListaSelecionado, numLinhas
 
     panelTarefas = PanedWindow(window, width = 400, height= 450,bg="gray")
     panelTarefas.place(x=300, y= 0)
@@ -373,7 +385,7 @@ def telaGerirTarefas():
 
 def addTarefa(username, tarefa, descrição='', favorito=False, dataAAcionar=None, horaAAcionar=None, categoria=None):
     from datetime import date, datetime
-    global lbLista, listaTemporaria
+    global lbLista, listaTemporaria, numLinhas
 
     while True:
         try:
@@ -407,7 +419,7 @@ def addTarefa(username, tarefa, descrição='', favorito=False, dataAAcionar=Non
         numLinhas.append(linha[0])
 
 def delTarefa(username, numTar):
-    global lbLista
+    global lbLista, numLinhas
 
     numTar = int(str(numTar).replace('(','').replace(',','').replace(')',''))
     print(numTar)
@@ -446,7 +458,8 @@ def delTarefa(username, numTar):
         numLinhas.append(linha[0])
 
 def selecionarTarefa(event):
-    global nomeTarefa, categoriaTarefa, calData, lbLista, listaTemporaria, horaLembrete, minutoLembrete, numListaSelecionado
+    global nomeTarefa, categoriaTarefa, calData, lbLista, listaTemporaria, horaLembrete, minutoLembrete, numListaSelecionado, numLinhas
+    print(numLinhas)
     try:
         nomeTarefa.set(listaTemporaria[int(numLinhas[int(str(lbLista.curselection()).replace('(','').replace(',)',''))])][1])
         categoriaTarefa.set(listaTemporaria[int(numLinhas[int(str(lbLista.curselection()).replace('(','').replace(',)',''))])][7])
@@ -642,10 +655,9 @@ def atualizarUser(username, password,gender,typeL,listaBase):
             acessos.write(linhaFinal)
             acessos.close()
 
-        ptr += 1
 
 def telaAdmin():
-    global userAtual, lbLista, nomeTarefa, listaTemporaria, categoriaTarefa, calData, horaLembrete, minutoLembrete
+    global userAtual, lbLista, nomeTarefa, listaTemporaria, categoriaTarefa, calData, horaLembrete, minutoLembrete, tituloNoticia, txtLead, textNoticia
 
     panelTarefas = PanedWindow(window, width = 400, height= 450,bg="gray")
     panelTarefas.place(x=300, y= 0)
@@ -662,8 +674,28 @@ def telaAdmin():
     lbListaUser = Listbox(lblTarefas,width =28, height = 10, justify=CENTER)
     lbListaUser.place(x=5 , y=50)
 
-    Francisco = Listbox(lblTarefas,width =28, height = 10, justify=CENTER)
-    Francisco.place(x=5 , y=220)
+    lblFrmCriarNoticia = LabelFrame(lblTarefas,width =180, height = 210, text='Criar notícia')
+    lblFrmCriarNoticia.place(x=5 , y=220)
+
+    tituloNoticia = StringVar()
+    txtTitulo = Entry(lblFrmCriarNoticia, width=28, textvariable=tituloNoticia)
+    tituloNoticia.set('[Título da notícia]')
+    txtTitulo.place(x=0,y=0)
+
+    txtLead = Text(lblFrmCriarNoticia, height=2, width=28, font=('Helvetica', 8))
+    txtLead.delete('0.0','end')
+    txtLead.insert('insert','[Lead da notícia]')
+    txtLead.place(x=0,y=20)
+
+    textNoticia = Text(lblFrmCriarNoticia, height=8, width=28, font=('Helvetica', 8))
+    textNoticia.delete('0.0','end')
+    textNoticia.insert('insert','[Notícia]')
+    textNoticia.place(x=0,y=40)
+
+    btnSubmeterNoticia = Button(lblFrmCriarNoticia, width=10, text='Submeter', command=submeterNoticia)
+    btnSubmeterNoticia.place(x=5,y=160)
+    btnReiniciarNoticia = Button(lblFrmCriarNoticia, width=10, text='Reiniciar', command=reiniciarNoticia)
+    btnReiniciarNoticia.place(x=90,y=160)
 
     lblTxtUser = Label(lblTarefas,width=8,text="Nome", font =("arial",12))
     lblTxtUser.place(x=240,y=50)
@@ -709,6 +741,8 @@ def telaAdmin():
         linha = linha.split(";")
         print(linha[0])
         lbListaUser.insert("end",linha[0])
+
+
 
 #codigo principal inicio
 window = Tk()
@@ -777,11 +811,35 @@ treeNotificacoes.column('Título', width=320, anchor='w')
 
 treeNotificacoes.column('Num', width=0, anchor='w')
 
+treeLembretes = ttk.Treeview(panel2, columns=('Lembrete','Tarefa'),show='headings', height=5)
+
+treeLembretes.heading('Tarefa', text='Tarefa')
+treeLembretes.column('Tarefa', width=320, anchor='w')
+
+treeLembretes.column('Lembrete', width=100, anchor='w')
+
 scrollBarNotificacoes = ttk.Scrollbar(panel2, orient='vertical', command=treeNotificacoes.yview())
 treeNotificacoes.configure(yscrollcommand=scrollBarNotificacoes.set)
 scrollBarNotificacoes.place(x=380,y=0, height=230)
 
+scrollBarLembrete = ttk.Scrollbar(panel2, orient='vertical', command=treeLembretes.yview())
+treeLembretes.configure(yscrollcommand=scrollBarLembrete.set)
+scrollBarLembrete.place(x=380,y=280, height=125)
+
 treeNotificacoes.place(x=0,y=0)
+treeLembretes.place(x=0,y=280)
+
+def atualizarLembretes(user):
+    global treeLembretes
+
+    ficheiroTarefas = open('files\\users\\{}\\listaTarefas.txt'.format(user), 'r')
+    listaTarefas = ficheiroTarefas.readlines()
+    ficheiroTarefas.close()
+
+    for i in listaTarefas:
+        tarefa = i.split(';')
+        if targetTime(dateConvert(tarefa[6].split(',')[0]),tarefa[6].split(',')[1]):
+            treeLembretes.insert('','end',values=('', tarefa[1]))
 
 def verNoticia():
     global treeNotificacoes, lblTituloNoticia, lblLeadNoticia, txtNoticia, panelNoticia
@@ -813,17 +871,20 @@ def verNoticia():
 
     print(linhaNoticia)
 
-btnVerNotficacao = Button(panel2, text='Ver notificação', command=verNoticia)
+btnVerNotficacao = Button(panel2, text='Ver notificação', command=verNoticia, state='disabled')
 btnVerNotficacao.place(x=10,y=240)
 
-btnVerNaoLido = Button(panel2, text='Ver não lidos', command=lambda:addNotificacoes(userAtual, filtro='Não Lido'))
+btnVerNaoLido = Button(panel2, text='Ver não lidos', command=lambda:addNotificacoes(userAtual, filtro='Não Lido'), state='disabled')
 btnVerNaoLido.place(x=120,y=240)
 
-btnVerLido = Button(panel2, text='Ver lidos', command=lambda:addNotificacoes(userAtual, filtro='Lido'))
+btnVerLido = Button(panel2, text='Ver lidos', command=lambda:addNotificacoes(userAtual, filtro='Lido'), state='disabled')
 btnVerLido.place(x=210,y=240)
 
-btnVerTodos = Button(panel2, text='Ver lidos', command=lambda:addNotificacoes(userAtual))
+btnVerTodos = Button(panel2, text='Ver lidos', command=lambda:addNotificacoes(userAtual), state='disabled')
 btnVerTodos.place(x=290,y=240)
+
+btnAtualizarLembretes = Button(panel2, text='Atualizar lembretes', command=lambda: atualizarLembretes(userAtual), state='disabled')
+btnAtualizarLembretes.place(x=140,y=410)
 
 def addNotificacoes(user, filtro=None):
     global treeNotificacoes
