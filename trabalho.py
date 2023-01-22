@@ -655,6 +655,38 @@ def atualizarUser(username, password,gender,typeL,listaBase):
             acessos.write(linhaFinal)
             acessos.close()
 
+    acessos.close()
+
+def reiniciarNoticia():
+    print('aaa')
+    tituloNoticia.set('[Título da notícia]')
+
+    txtLead.delete('0.0','end')
+    txtLead.insert('insert','[Lead da notícia]')
+
+    textNoticia.delete('0.0','end')
+    textNoticia.insert('insert','[Notícia]')
+
+def submeterNoticia():
+    from datetime import date, datetime
+    data = date.today()
+    hora = datetime.now().strftime('%H:%M:%S')
+
+    linhaNoticia = 'Não Lido;;;{};;;{};;;{};;;{},{}\n'.format(tituloNoticia.get(),txtLead.get('0.0','end').replace('\n',''),textNoticia.get('0.0','end').replace('\n',''),data,hora)
+    users = []
+    listaAcessos = open('files\\acessos.txt', "r", encoding="utf8")
+    linhas = listaAcessos.readlines()
+    listaAcessos.close()
+
+    for i in linhas:
+        users.append(i.split(';')[0])
+    ()
+
+    for user in users:
+        ficheiroNoticias = open('files\\users\\{}\\noticias.txt'.format(user), 'a', encoding='utf-8')
+        ficheiroNoticias.write(linhaNoticia)
+        ficheiroNoticias.close()
+
 
 def telaAdmin():
     global userAtual, lbLista, nomeTarefa, listaTemporaria, categoriaTarefa, calData, horaLembrete, minutoLembrete, tituloNoticia, txtLead, textNoticia
