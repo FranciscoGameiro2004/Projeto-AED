@@ -132,41 +132,6 @@ def loginConta(username, txtMenuLoginNome, nameLogin,
                 btnVerTodos.config(state='normal')
                 btnAtualizarLembretes.config(state='normal')
 
-    elif login == 1:
-        for linha in linhas:
-            linha = linha.split(";")
-            print(linha)
-            if linha[0] == userAtual and linha[1] == passUserAtual:
-                print("Logado")
-                #Zona de informação do usuario
-                txtDescricao.insert("end" ,linha[4])
-                txtDescricao.config(state =DISABLED)
-
-                btnOpcao2.config(state='active')
-                btnOpcao3.config(state='active')
-                a = tipoDeConta(userAtual)
-                if tipoDeConta(userAtual) == 'admin':
-                    btnOpcao4.config(state='active')
-
-                btnLogin.config(text = "Logout")
-
-                #zona de Login
-                nameLogin.set("")
-                txtMenuLoginNome.config(state = DISABLED)
-
-                passwordLogin.set("")
-                txtMenuLoginSenha.config(state = DISABLED)
-
-                cbModo.config(state = DISABLED)
-                btnMenuCriar_Login_Modos.config(state = DISABLED)
-
-                addNotificacoes(userAtual)
-                atualizarLembretes(userAtual)
-                btnVerNotficacao.config(state='normal')
-                btnVerNaoLido.config(state='normal')
-                btnVerLido.config(state='normal')
-                btnVerTodos.config(state='normal')
-                btnAtualizarLembretes.config(state='normal')
 
     elif login == 1:
         #user
@@ -331,6 +296,7 @@ def telaAreaPessoalLogin(lblBase,nameInfo, genderInfo, typeInfo, txtDescricao,cb
                                                                                                                                 cbGenero,cbTipo))
         btnLogin.place(x = 23, y = 90)
         btnLogin.invoke()
+        
     
 def telaAreaPessoal():
     global generos
