@@ -54,14 +54,6 @@ def criarConta(username, password,gender,type,lista):
                 #os.chdir('files\\users')
                 os.mkdir(pastaUser)
 
-            User = open(ficheiroUserLIne, "a", encoding="utf8")
-            User.write("Primeira tarefa\n")
-            User.close()
-
-            Noticias = open(ficheiroUserNoticias, "a", encoding="utf8")
-            Noticias.write("Primeira notícia\n")
-            Noticias.close()
-
             print(username)
 
             lista.insert(END, username)
