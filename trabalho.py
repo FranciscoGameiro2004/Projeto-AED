@@ -604,14 +604,6 @@ def delUser(listaBase):
 
 
 
-
-    
-
-
-
-
-
-
 def telaAdmin():
     global userAtual, lbLista, nomeTarefa, listaTemporaria, categoriaTarefa, calData, horaLembrete, minutoLembrete
 
@@ -674,29 +666,6 @@ def telaAdmin():
         linha = linha.split(";")
         print(linha[0])
         lbListaUser.insert("end",linha[0])
-
-
-
-
-
-
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 #codigo principal inicio
 window = Tk()
