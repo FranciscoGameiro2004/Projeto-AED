@@ -54,6 +54,14 @@ def criarConta(username, password,gender,type,lista):
                 #os.chdir('files\\users')
                 os.mkdir(pastaUser)
 
+            User = open(ficheiroUserLIne, "a", encoding="utf8")
+            User.write("Primeira tarefa\n")
+            User.close()
+
+            Noticias = open(ficheiroUserNoticias, "a", encoding="utf8")
+            Noticias.write("Primeira notícia\n")
+            Noticias.close()
+
             print(username)
 
             lista.insert(END, username)
@@ -288,8 +296,7 @@ def telaAreaPessoalLogin(lblBase,nameInfo, genderInfo, typeInfo, txtDescricao,cb
                                                                                                                                 cbGenero,cbTipo))
         btnLogin.place(x = 23, y = 90)
         btnLogin.invoke()
-        
-    
+         
 def telaAreaPessoal():
     global generos
     global img, userAtual,passUserAtual,login
@@ -673,6 +680,11 @@ def atualizarUser(username, password,gender,typeL,listaBase):
     user = listaBase.get(pos)
     print(user)
 
+    pastaUserAntes = pasta + '/users/' + user
+    print(pastaUserAntes)
+    pastaUserDepois = pasta + '/users/' + username
+    print(pastaUserDepois)
+
     acessos = open(ficheiroUsurios, "w", encoding="utf8")
     acessos.close()
     linhaFinal = ""
@@ -688,6 +700,7 @@ def atualizarUser(username, password,gender,typeL,listaBase):
         print("\n") 
         acessos = open(ficheiroUsurios, "a", encoding="utf8")
         if ptr == index:
+            linhaFinal = ""
             print("ptr == index")
             linha[0] = username
             linha[1] = password
@@ -698,11 +711,14 @@ def atualizarUser(username, password,gender,typeL,listaBase):
             acessos.write(linhaFinal)
             acessos.close()
         else:
+            linhaFinal = ""
             linhaFinal =  linha[0] + ";" + linha[1] + ";" + linha[2] + ";" + linha[3] + ";" + linha[4]
             acessos.write(linhaFinal)
             acessos.close()
-
+        ptr += 1
     acessos.close()
+    os.rename(pastaUserAntes,pastaUserDepois)
+
 
 def reiniciarNoticia():
     print('aaa')
@@ -746,7 +762,7 @@ def telaAdmin():
     lblAdmin = LabelFrame(lblTarefas, width=370,height=40)
     lblAdmin.place(x=5,y=5)
 
-    lblTxtTarefas = Label(lblAdmin,width=8,text="Tarefas", font =("arial",15))
+    lblTxtTarefas = Label(lblAdmin,width=8,text="ADMIN", font =("arial",15))
     lblTxtTarefas.place(x=140,y=5)
 
     lbListaUser = Listbox(lblTarefas,width =28, height = 10, justify=CENTER)
@@ -796,7 +812,7 @@ def telaAdmin():
 
     lblTxtType = Label(lblTarefas,width=8,text="Tipo", font =("arial",12))
     lblTxtType.place(x = 240, y = 187)
-    TypeLista = ["","Comum","Profissional"]
+    TypeLista = ["","Comum","Profissional","admin"]
     TypeAc = StringVar()
     cbType = ttk.Combobox(lblTarefas, width=18, values=TypeLista, textvariable=TypeAc, font =("arial",12), state="readonly")
     cbType.place(x = 185,y = 209)
@@ -956,7 +972,7 @@ btnVerNaoLido.place(x=120,y=240)
 btnVerLido = Button(panel2, text='Ver lidos', command=lambda:addNotificacoes(userAtual, filtro='Lido'), state='disabled')
 btnVerLido.place(x=210,y=240)
 
-btnVerTodos = Button(panel2, text='Ver lidos', command=lambda:addNotificacoes(userAtual), state='disabled')
+btnVerTodos = Button(panel2, text='Ver todos', command=lambda:addNotificacoes(userAtual), state='disabled')
 btnVerTodos.place(x=290,y=240)
 
 btnAtualizarLembretes = Button(panel2, text='Atualizar lembretes', command=lambda: atualizarLembretes(userAtual), state='disabled')
