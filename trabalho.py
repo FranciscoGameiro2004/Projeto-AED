@@ -1,7 +1,6 @@
 """
 doc string
 """
-
 #Bibloiotecas inportadasa inicio
 import os  # biblioteca os
 import datetime
@@ -21,13 +20,13 @@ os.system("cls")
 pasta = "files"
 ficheiroUsurios = "files/acessos.txt"
 userAtual = '' # Esta variável permite determinar qual é o utilizador ativo no momento.
+passUserAtual=''# Esta variável permite determinar qual é a senha utilizador ativo no momento.
 #---#
 login = 0
 status = 0
-#Verfica a existencia da pasta inicio
-if not os.path.exists(pasta):
+
+if not os.path.exists(pasta): #Verfica a existencia da pasta inicio
     os.mkdir(pasta)
-#Verfica a existencia da pasta fim
 
 def criarConta(username, password,gender,type,lista):
     """
@@ -81,10 +80,11 @@ def loginConta(username, txtMenuLoginNome, nameLogin,
                cbGenero,cbTipo):
     #print(username)
     #print(password)
-    global login, userAtual, btnOpcao2, btnOpcao3, btnOpcao4, numListaSelecionado
+    global login, userAtual, passUserAtual, btnOpcao2, btnOpcao3, btnOpcao4, numListaSelecionado
     acessos = open(ficheiroUsurios, "r", encoding="utf8")
     linhas = acessos.readlines()
     acessos.close()
+    print(login)
     if login == 0:
         for linha in linhas:
             linha = linha.split(";")
@@ -99,6 +99,8 @@ def loginConta(username, txtMenuLoginNome, nameLogin,
                 txtDescricao.config(state =DISABLED)
 
                 userAtual = linha[0]
+                passUserAtual = password
+
                 btnOpcao2.config(state='active')
                 btnOpcao3.config(state='active')
                 a = tipoDeConta(userAtual)
@@ -116,10 +118,11 @@ def loginConta(username, txtMenuLoginNome, nameLogin,
                 btnMenuCriar_Login_Modos.config(state = DISABLED)
 
                 btnLogin.config(text = "Logout")
-                login = 1
                 msg = "Bem vindo " + username 
-                messagebox.showinfo(title="Estado",message=msg)
+                if login == 0:
+                    messagebox.showinfo(title="Estado",message=msg)
                 numListaSelecionado = 0
+                login = 1
 
                 addNotificacoes(userAtual)
                 atualizarLembretes(userAtual)
@@ -128,6 +131,43 @@ def loginConta(username, txtMenuLoginNome, nameLogin,
                 btnVerLido.config(state='normal')
                 btnVerTodos.config(state='normal')
                 btnAtualizarLembretes.config(state='normal')
+
+    elif login == 1:
+        for linha in linhas:
+            linha = linha.split(";")
+            print(linha)
+            if linha[0] == userAtual and linha[1] == passUserAtual:
+                print("Logado")
+                #Zona de informação do usuario
+                txtDescricao.insert("end" ,linha[4])
+                txtDescricao.config(state =DISABLED)
+
+                btnOpcao2.config(state='active')
+                btnOpcao3.config(state='active')
+                a = tipoDeConta(userAtual)
+                if tipoDeConta(userAtual) == 'admin':
+                    btnOpcao4.config(state='active')
+
+                btnLogin.config(text = "Logout")
+
+                #zona de Login
+                nameLogin.set("")
+                txtMenuLoginNome.config(state = DISABLED)
+
+                passwordLogin.set("")
+                txtMenuLoginSenha.config(state = DISABLED)
+
+                cbModo.config(state = DISABLED)
+                btnMenuCriar_Login_Modos.config(state = DISABLED)
+
+                addNotificacoes(userAtual)
+                atualizarLembretes(userAtual)
+                btnVerNotficacao.config(state='normal')
+                btnVerNaoLido.config(state='normal')
+                btnVerLido.config(state='normal')
+                btnVerTodos.config(state='normal')
+                btnAtualizarLembretes.config(state='normal')
+
     elif login == 1:
         #user
         userAtual = ''
@@ -158,9 +198,11 @@ def loginConta(username, txtMenuLoginNome, nameLogin,
         btnAtualizarLembretes.config(state='disabled')
 
         btnLogin.config(text = "Login")
-        login = 0
+
         msg = "Volte sempre"
         messagebox.showinfo(title="Estado",message=msg)
+
+        login = 0
 
 def checkModo(cbModo,btnMenuCriar_Login_Modos,lblBase,nameInfo,genderInfo,typeInfo,txtDescricao):
     if cbModo.get() == "Registrar":
@@ -207,51 +249,92 @@ def telaAreaPessoalCriar(lblBase,nameInfo, genderInfo, typeInfo, txtDescricao):
     btnRegistrar.place(x = 23, y = 110)
 
 def telaAreaPessoalLogin(lblBase,nameInfo, genderInfo, typeInfo, txtDescricao,cbModo,btnMenuCriar_Login_Modos):
-    global login
-    #--------------------------------------------------------------------#
-    lblMenuLogin = LabelFrame(lblBase,width=295,height=210,text="Logar Conta")
-    lblMenuLogin.place(x=5,y=33)
-#---#
-    lblMenuLoginNome = Label(lblMenuLogin,width=5,height=1,text="Nome", font = ("arial", 12))
-    lblMenuLoginNome.place(x=39,y=5)
-    nameLogin = StringVar()
-    nameLogin.set("admin")
-    txtMenuLoginNome = Entry(lblMenuLogin,width=15,justify=CENTER,textvariable=nameLogin)
-    txtMenuLoginNome.place(x=20,y=25)
-    #----------------------------------------------------------------#
-    lblMenuLoginSenha = Label(lblMenuLogin,width=5,height=1,text="Senha", font = ("arial", 12))
-    lblMenuLoginSenha.place(x=189,y=5)
-    passwordLogin = StringVar()
-    passwordLogin.set("admin")
-    txtMenuLoginSenha = Entry(lblMenuLogin,width=15,justify=CENTER, textvariable=passwordLogin, show="*")
-    txtMenuLoginSenha.place(x=170,y=25)
-    #----------------------------------------------------------------#
-    lblMenuLoginGenero = Label(lblMenuLogin,width=5,height=1,text="Genero", font = ("arial",12))
-    lblMenuLoginGenero.place(x=39,y=44)
-    generosLista = ["","Masculino", "Feminino", "Outro"]
-    generoLogin = StringVar()
-    cbGenero = ttk.Combobox(lblMenuLogin, width=12, value=generosLista, textvariable=generoLogin,state=DISABLED)
-    cbGenero.place(x=20,y=65)
-    #----------------------------------------------------------------#
-    lblMenuLoginTipo = Label(lblMenuLogin,width=14,height=1,text="Tipos de conta", font = ("arial",12))
-    lblMenuLoginTipo.place(x=155,y=44)
-    tiposLista = ["","Comum","Profissional"]
-    tiposLogin = StringVar()
-    cbTipo = ttk.Combobox(lblMenuLogin, width=12, value=tiposLista, textvariable=tiposLogin,state=DISABLED)
-    cbTipo.place(x=170,y=65)
-    #----------------------------------------------------------------#
-    btnLogin = Button(lblMenuLogin,width=25, height=1, text="Login", font = ("arial",12),command= lambda: loginConta(   nameLogin.get(), txtMenuLoginNome, nameLogin,
-                                                                                                                        passwordLogin.get(), txtMenuLoginSenha, passwordLogin,
-                                                                                                                        nameInfo, genderInfo, typeInfo, txtDescricao,
-                                                                                                                        btnLogin,
-                                                                                                                        cbModo,btnMenuCriar_Login_Modos,
-                                                                                                                        cbGenero,cbTipo))
-    btnLogin.place(x = 23, y = 90)
-    loginConta(nameLogin.get(), txtMenuLoginNome, nameLogin, passwordLogin.get(), txtMenuLoginSenha, passwordLogin, nameInfo, genderInfo, typeInfo, txtDescricao,btnLogin,cbModo,btnMenuCriar_Login_Modos,cbGenero,cbTipo)
+    global login,userAtual,passUserAtual
+    if login == 0:
+        #--------------------------------------------------------------------#
+        lblMenuLogin = LabelFrame(lblBase,width=295,height=210,text="Logar Conta")
+        lblMenuLogin.place(x=5,y=33)
+    #---#
+        lblMenuLoginNome = Label(lblMenuLogin,width=5,height=1,text="Nome", font = ("arial", 12))
+        lblMenuLoginNome.place(x=39,y=5)
+        nameLogin = StringVar()
+        txtMenuLoginNome = Entry(lblMenuLogin,width=15,justify=CENTER,textvariable=nameLogin)
+        txtMenuLoginNome.place(x=20,y=25)
+        #----------------------------------------------------------------#
+        lblMenuLoginSenha = Label(lblMenuLogin,width=5,height=1,text="Senha", font = ("arial", 12))
+        lblMenuLoginSenha.place(x=189,y=5)
+        passwordLogin = StringVar()
+        txtMenuLoginSenha = Entry(lblMenuLogin,width=15,justify=CENTER, textvariable=passwordLogin, show="*")
+        txtMenuLoginSenha.place(x=170,y=25)
+        #----------------------------------------------------------------#
+        lblMenuLoginGenero = Label(lblMenuLogin,width=5,height=1,text="Genero", font = ("arial",12))
+        lblMenuLoginGenero.place(x=39,y=44)
+        generosLista = ["","Masculino", "Feminino", "Outro"]
+        generoLogin = StringVar()
+        cbGenero = ttk.Combobox(lblMenuLogin, width=12, value=generosLista, textvariable=generoLogin,state=DISABLED)
+        cbGenero.place(x=20,y=65)
+        #----------------------------------------------------------------#
+        lblMenuLoginTipo = Label(lblMenuLogin,width=14,height=1,text="Tipos de conta", font = ("arial",12))
+        lblMenuLoginTipo.place(x=155,y=44)
+        tiposLista = ["","Comum","Profissional"]
+        tiposLogin = StringVar()
+        cbTipo = ttk.Combobox(lblMenuLogin, width=12, value=tiposLista, textvariable=tiposLogin,state=DISABLED)
+        cbTipo.place(x=170,y=65)
+        #----------------------------------------------------------------#
+        btnLogin = Button(lblMenuLogin,width=25, height=1, text="Login", font = ("arial",12),command= lambda: loginConta(   nameLogin.get(), txtMenuLoginNome, nameLogin,
+                                                                                                                                passwordLogin.get(), txtMenuLoginSenha, passwordLogin,
+                                                                                                                                nameInfo, genderInfo, typeInfo, txtDescricao,
+                                                                                                                                btnLogin,
+                                                                                                                                cbModo,btnMenuCriar_Login_Modos,
+                                                                                                                                cbGenero,cbTipo))
+        btnLogin.place(x = 23, y = 90)
+        
 
+    elif login == 1 and userAtual != "":
+        #--------------------------------------------------------------------#
+        lblMenuLogin = LabelFrame(lblBase,width=295,height=210,text="Logar Conta")
+        lblMenuLogin.place(x=5,y=33)
+    #---#
+        lblMenuLoginNome = Label(lblMenuLogin,width=5,height=1,text="Nome", font = ("arial", 12))
+        lblMenuLoginNome.place(x=39,y=5)
+        nameLogin = StringVar()
+        nameLogin.set(userAtual)
+        txtMenuLoginNome = Entry(lblMenuLogin,width=15,justify=CENTER,textvariable=nameLogin)
+        txtMenuLoginNome.place(x=20,y=25)
+        #----------------------------------------------------------------#
+        lblMenuLoginSenha = Label(lblMenuLogin,width=5,height=1,text="Senha", font = ("arial", 12))
+        lblMenuLoginSenha.place(x=189,y=5)
+        passwordLogin = StringVar()
+        passwordLogin.set(passUserAtual)
+        txtMenuLoginSenha = Entry(lblMenuLogin,width=15,justify=CENTER, textvariable=passwordLogin, show="*")
+        txtMenuLoginSenha.place(x=170,y=25)
+        #----------------------------------------------------------------#
+        lblMenuLoginGenero = Label(lblMenuLogin,width=5,height=1,text="Genero", font = ("arial",12))
+        lblMenuLoginGenero.place(x=39,y=44)
+        generosLista = ["","Masculino", "Feminino", "Outro"]
+        generoLogin = StringVar()
+        cbGenero = ttk.Combobox(lblMenuLogin, width=12, value=generosLista, textvariable=generoLogin,state=DISABLED)
+        cbGenero.place(x=20,y=65)
+        #----------------------------------------------------------------#
+        lblMenuLoginTipo = Label(lblMenuLogin,width=14,height=1,text="Tipos de conta", font = ("arial",12))
+        lblMenuLoginTipo.place(x=155,y=44)
+        tiposLista = ["","Comum","Profissional"]
+        tiposLogin = StringVar()
+        cbTipo = ttk.Combobox(lblMenuLogin, width=12, value=tiposLista, textvariable=tiposLogin,state=DISABLED)
+        cbTipo.place(x=170,y=65)
+        #----------------------------------------------------------------#
+        btnLogin = Button(lblMenuLogin,width=25, height=1, text="Login", font = ("arial",12),command= lambda: loginConta(   nameLogin.get(), txtMenuLoginNome, nameLogin,
+                                                                                                                                passwordLogin.get(), txtMenuLoginSenha, passwordLogin,
+                                                                                                                                nameInfo, genderInfo, typeInfo, txtDescricao,
+                                                                                                                                btnLogin,
+                                                                                                                                cbModo,btnMenuCriar_Login_Modos,
+                                                                                                                                cbGenero,cbTipo))
+        btnLogin.place(x = 23, y = 90)
+        btnLogin.invoke()
+    
 def telaAreaPessoal():
     global generos
-    global img
+    global img, userAtual,passUserAtual,login
 
     panelNomes = PanedWindow(window, width = 400, height= 450,bg="gray")
     panelNomes.place(x=300, y= 0)
@@ -301,8 +384,14 @@ def telaAreaPessoal():
     cbModo = ttk.Combobox(lblMenuCriar_login, width=12, value=modosLista, textvariable=modos, state="readonly")
     cbModo.place(x=53,y=10)
 #---#
-    btnMenuCriar_Login_Modos = Button(lblMenuCriar_login,width=15, height=1, text="Selecionar Modo",command = lambda:checkModo(cbModo,btnMenuCriar_Login_Modos,lblMenuCriar_login,nameInfo, genderInfo, typeInfo, txtDescricao))
-    btnMenuCriar_Login_Modos.place(x=155,y=5)
+    if login == 0:
+        btnMenuCriar_Login_Modos = Button(lblMenuCriar_login,width=15, height=1, text="Selecionar Modo",command = lambda:checkModo(cbModo,btnMenuCriar_Login_Modos,lblMenuCriar_login,nameInfo, genderInfo, typeInfo, txtDescricao))
+        btnMenuCriar_Login_Modos.place(x=155,y=5)
+    elif login == 1:
+        modos.set("Login")
+        btnMenuCriar_Login_Modos = Button(lblMenuCriar_login,width=15, height=1, text="Selecionar Modo",command = lambda:checkModo(cbModo,btnMenuCriar_Login_Modos,lblMenuCriar_login,nameInfo, genderInfo, typeInfo, txtDescricao))
+        btnMenuCriar_Login_Modos.place(x=155,y=5)
+        btnMenuCriar_Login_Modos.invoke()
 
 def telaGerirTarefas():
     global userAtual, lbLista, nomeTarefa, listaTemporaria, categoriaTarefa, calData, horaLembrete, minutoLembrete, numListaSelecionado, numLinhas
@@ -687,7 +776,6 @@ def submeterNoticia():
         ficheiroNoticias.write(linhaNoticia)
         ficheiroNoticias.close()
 
-
 def telaAdmin():
     global userAtual, lbLista, nomeTarefa, listaTemporaria, categoriaTarefa, calData, horaLembrete, minutoLembrete, tituloNoticia, txtLead, textNoticia
 
@@ -773,8 +861,6 @@ def telaAdmin():
         linha = linha.split(";")
         print(linha[0])
         lbListaUser.insert("end",linha[0])
-
-
 
 #codigo principal inicio
 window = Tk()
