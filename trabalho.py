@@ -337,8 +337,10 @@ def telaGerirTarefas():
     lblTxtCategoria = Label(lblTarefas,width=8,text="Categoria", font =("arial",12))
     lblTxtCategoria.place(x=240,y=138)
     categoriaTarefa = StringVar()
-    txtCategoria = Entry(lblTarefas, width=20, font = ("arial",12), textvariable=categoriaTarefa)
+    txtCategoria = Entry(lblTarefas, width=16, font = ("arial",12), textvariable=categoriaTarefa)
     txtCategoria.place(x = 185, y=160)
+    btnProcurarCategoria = Button(panelTarefas,width=2,height=1, bg='black', command= lambda: procurarCategoria(userAtual, txtCategoria.get()))
+    btnProcurarCategoria.place(x=350,y=164)
 
     lblTxtFavorito = Label(lblTarefas,width=8,text="Favorito", font =("arial",12))
     lblTxtFavorito.place(x=240,y=138+44)
@@ -446,10 +448,10 @@ def delTarefa(username, numTar):
 def selecionarTarefa(event):
     global nomeTarefa, categoriaTarefa, calData, lbLista, listaTemporaria, horaLembrete, minutoLembrete, numListaSelecionado
     try:
-        nomeTarefa.set(listaTemporaria[int(str(lbLista.curselection()).replace('(','').replace(',)',''))][1])
-        categoriaTarefa.set(listaTemporaria[int(str(lbLista.curselection()).replace('(','').replace(',)',''))][7])
-        calData.set_date(listaTemporaria[int(str(lbLista.curselection()).replace('(','').replace(',)',''))][6][0])
-        horas = str(listaTemporaria[int(str(lbLista.curselection()).replace('(','').replace(',)',''))][6][1]).split(':')
+        nomeTarefa.set(listaTemporaria[int(numLinhas[int(str(lbLista.curselection()).replace('(','').replace(',)',''))])][1])
+        categoriaTarefa.set(listaTemporaria[int(numLinhas[int(str(lbLista.curselection()).replace('(','').replace(',)',''))])][7])
+        calData.set_date(listaTemporaria[int(numLinhas[int(str(lbLista.curselection()).replace('(','').replace(',)',''))])][6][0])
+        horas = str(listaTemporaria[int(numLinhas[int(str(lbLista.curselection()).replace('(','').replace(',)',''))])][6][1]).split(':')
         horaLembrete.set(horas[0])
         minutoLembrete.set(horas[1])
 
@@ -459,7 +461,8 @@ def selecionarTarefa(event):
         print('Selecionado: {}'.format(numListaSelecionado))
 
 def atualizarTarefa(username, numTar):
-    numTar = int(numTar)
+    global numLinhas
+    numTar = int(numLinhas[int(numTar)])
     print(numTar)
     ficheiroTarefas = open('files\\users\\{}\\listaTarefas.txt'.format(username), 'r', encoding='UTF-8')
     listaTarefas = ficheiroTarefas.readlines()
@@ -467,7 +470,7 @@ def atualizarTarefa(username, numTar):
     linhaTarefa = listaTarefas[numTar]
     tarefa = linhaTarefa.split(';')
     tarefa[1] = nomeTarefa.get()
-    tarefa[7] = ' ' + categoriaTarefa.get()
+    tarefa[7] = categoriaTarefa.get() + '\n'
     print(tarefa)
 
     linhaTarefa=''
@@ -493,6 +496,28 @@ def atualizarTarefa(username, numTar):
         lbLista.insert(END, linha[1])
         listaTemporaria.append([linha[0],linha[1],linha[2],linha[3],linha[4],linha[5],linha[6].split(','),linha[7]])
         numLinhas.append(linha[0])
+    ()
+
+def procurarCategoria(username, categoriaAlvo=''):
+    global numLinhas
+    ficheiroTarefas = open('files\\users\\{}\\listaTarefas.txt'.format(username), 'r', encoding='UTF-8')
+    listaTarefas = ficheiroTarefas.readlines()
+    print(listaTarefas)
+    ficheiroTarefas.close()
+
+    listaTemporaria = []
+    lbLista.delete(0,END)
+    numLinhas = []
+    for i in listaTarefas:
+        linha = i.split(';')
+        if categoriaAlvo == '':
+            lbLista.insert(END, linha[1])
+            listaTemporaria.append([linha[0],linha[1],linha[2],linha[3],linha[4],linha[5],linha[6].split(','),linha[7]])
+            numLinhas.append(linha[0])
+        elif linha[7].replace('\n','')==categoriaAlvo:
+            lbLista.insert(END, linha[1])
+            listaTemporaria.append([linha[0],linha[1],linha[2],linha[3],linha[4],linha[5],linha[6].split(','),linha[7]])
+            numLinhas.append(linha[0])
     ()
 
 def telaConsultarTarefas():
