@@ -625,9 +625,39 @@ def atualizarUser(username, password,gender,type,listaBase):
 
     acessos.close()
 
+def reiniciarNoticia():
+    print('aaa')
+    tituloNoticia.set('[Título da notícia]')
+
+    txtLead.delete('0.0','end')
+    txtLead.insert('insert','[Lead da notícia]')
+
+    textNoticia.delete('0.0','end')
+    textNoticia.insert('insert','[Notícia]')
+
+def submeterNoticia():
+    from datetime import date, datetime
+    data = date.today()
+    hora = datetime.now().strftime('%H:%M:%S')
+
+    linhaNoticia = 'Não Lido;;;{};;;{};;;{};;;{},{}\n'.format(tituloNoticia.get(),txtLead.get('0.0','end').replace('\n',''),textNoticia.get('0.0','end').replace('\n',''),data,hora)
+    users = []
+    listaAcessos = open('files\\acessos.txt', "r", encoding="utf8")
+    linhas = listaAcessos.readlines()
+    listaAcessos.close()
+
+    for i in linhas:
+        users.append(i.split(';')[0])
+    ()
+
+    for user in users:
+        ficheiroNoticias = open('files\\users\\{}\\noticias.txt'.format(user), 'a', encoding='utf-8')
+        ficheiroNoticias.write(linhaNoticia)
+        ficheiroNoticias.close()
+
 
 def telaAdmin():
-    global userAtual, lbLista, nomeTarefa, listaTemporaria, categoriaTarefa, calData, horaLembrete, minutoLembrete
+    global userAtual, lbLista, nomeTarefa, listaTemporaria, categoriaTarefa, calData, horaLembrete, minutoLembrete, tituloNoticia, txtLead, textNoticia
 
     panelTarefas = PanedWindow(window, width = 400, height= 450,bg="gray")
     panelTarefas.place(x=300, y= 0)
@@ -644,8 +674,28 @@ def telaAdmin():
     lbListaUser = Listbox(lblTarefas,width =28, height = 10, justify=CENTER)
     lbListaUser.place(x=5 , y=50)
 
-    Francisco = Listbox(lblTarefas,width =28, height = 10, justify=CENTER)
-    Francisco.place(x=5 , y=220)
+    lblFrmCriarNoticia = LabelFrame(lblTarefas,width =180, height = 210, text='Criar notícia')
+    lblFrmCriarNoticia.place(x=5 , y=220)
+
+    tituloNoticia = StringVar()
+    txtTitulo = Entry(lblFrmCriarNoticia, width=28, textvariable=tituloNoticia)
+    tituloNoticia.set('[Título da notícia]')
+    txtTitulo.place(x=0,y=0)
+
+    txtLead = Text(lblFrmCriarNoticia, height=2, width=28, font=('Helvetica', 8))
+    txtLead.delete('0.0','end')
+    txtLead.insert('insert','[Lead da notícia]')
+    txtLead.place(x=0,y=20)
+
+    textNoticia = Text(lblFrmCriarNoticia, height=8, width=28, font=('Helvetica', 8))
+    textNoticia.delete('0.0','end')
+    textNoticia.insert('insert','[Notícia]')
+    textNoticia.place(x=0,y=40)
+
+    btnSubmeterNoticia = Button(lblFrmCriarNoticia, width=10, text='Submeter', command=submeterNoticia)
+    btnSubmeterNoticia.place(x=5,y=160)
+    btnReiniciarNoticia = Button(lblFrmCriarNoticia, width=10, text='Reiniciar', command=reiniciarNoticia)
+    btnReiniciarNoticia.place(x=90,y=160)
 
     lblTxtUser = Label(lblTarefas,width=8,text="Nome", font =("arial",12))
     lblTxtUser.place(x=240,y=50)
@@ -691,6 +741,8 @@ def telaAdmin():
         linha = linha.split(";")
         print(linha[0])
         lbListaUser.insert("end",linha[0])
+
+
 
 #codigo principal inicio
 window = Tk()
