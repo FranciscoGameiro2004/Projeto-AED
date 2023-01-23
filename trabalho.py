@@ -55,11 +55,11 @@ def criarConta(username, password,gender,type,lista):
                 os.mkdir(pastaUser)
 
             User = open(ficheiroUserLIne, "a", encoding="utf8")
-            User.write("Primeira tarefa\n")
+            User.write("")
             User.close()
 
             Noticias = open(ficheiroUserNoticias, "a", encoding="utf8")
-            Noticias.write("Primeira notícia\n")
+            Noticias.write("")
             Noticias.close()
 
             print(username)
@@ -719,7 +719,6 @@ def atualizarUser(username, password,gender,typeL,listaBase):
     acessos.close()
     os.rename(pastaUserAntes,pastaUserDepois)
 
-
 def reiniciarNoticia():
     print('aaa')
     tituloNoticia.set('[Título da notícia]')
@@ -1016,3 +1015,4 @@ btnFechar = Button(panelNoticia, text='Fechar', command= lambda: panelNoticia.pl
 btnFechar.place(x=0,y=0)
 
 window.mainloop()
+os.system("cls")
