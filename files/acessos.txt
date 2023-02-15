@@ -1,3 +1,2 @@
 admin;admin;Outro;admin;Readme
 comun;12345;Outro;Comum;Readme
-profissional;12345;Outro;Profissional;Readme

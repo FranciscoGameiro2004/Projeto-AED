@@ -357,7 +357,7 @@ def telaAreaPessoal():
         btnMenuCriar_Login_Modos = Button(lblMenuCriar_login,width=15, height=1, text="Selecionar Modo",command = lambda:checkModo(cbModo,btnMenuCriar_Login_Modos,lblMenuCriar_login,nameInfo, genderInfo, typeInfo, txtDescricao))
         btnMenuCriar_Login_Modos.place(x=155,y=5)
         btnMenuCriar_Login_Modos.invoke()
-
+        
 def telaGerirTarefas():
     global userAtual, lbLista, nomeTarefa, listaTemporaria, categoriaTarefa, calData, horaLembrete, minutoLembrete, numListaSelecionado, numLinhas
 
