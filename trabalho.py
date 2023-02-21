@@ -199,7 +199,6 @@ def telaAreaPessoalCriar(lblBase,nameInfo, genderInfo, typeInfo, txtDescricao):
     generosLista = ["","Masculino", "Feminino", "Outro"]
     generoCriar = StringVar()
     cbGenero = ttk.Combobox(lblMenuCriar, width=12, value=generosLista, textvariable=generoCriar)
-    cbGenero.set("Masculino")
     cbGenero.place(x=20,y=65)
     #----------------------------------------------------------------#
     lblMenuCriarTipo = Label(lblMenuCriar,width=13,height=1,text="Tipos de conta", font = ("arial",12))
@@ -626,6 +625,7 @@ def telaConsultarTarefas():
     print(numLinhas)
 
 def delUser(listaBase):
+    
     pastaUser =""
     pos = listaBase.curselection()
     print(pos)
